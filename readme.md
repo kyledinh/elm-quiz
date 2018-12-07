@@ -17,6 +17,8 @@ Features to build:
 * [ ] hints/clues/notes for each entry
 * [ ] customize the UI/CSS for unique look
 
+<img src="assets/elm-quiz-screen.png" width="600" />
+
 ## Dev Notes
 
 * Use Elm 19 to build - `/build.sh` or `elm make src/Quiz.elm --output=elm.js`

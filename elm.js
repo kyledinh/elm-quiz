@@ -5265,7 +5265,7 @@ var author$project$Main$update = F2(
 									author$project$Main$newEntry,
 									'What is your favorite color?',
 									_List_fromArray(
-										['Apple', 'Bakker', 'Charlie']),
+										['Blue', 'Red', 'Green', 'Orange']),
 									0),
 									A3(
 									author$project$Main$newEntry,

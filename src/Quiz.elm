@@ -143,7 +143,7 @@ update msg model =
                 , current = 0
                 , field = ""
                 , entries = [
-                  newEntry "What is your favorite color?" ["Apple", "Bakker","Charlie"] 0
+                  newEntry "What is your favorite color?" ["Blue", "Red","Green","Orange"] 0
                   , newEntry "Where are you from?" ["Dunn","Eden","Fern"] 1
                   , newEntry "When is the party?" ["Gordon","Hell","Indigo"] 2
                 ]
