@@ -5290,6 +5290,12 @@ var author$project$Main$update = F2(
 						model,
 						{current: model.current + 1}),
 					elm$core$Platform$Cmd$none);
+			case 'PreviousEntry':
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{current: model.current - 1}),
+					elm$core$Platform$Cmd$none);
 			case 'Add':
 				return _Utils_Tuple2(
 					_Utils_update(
@@ -5537,6 +5543,7 @@ var author$project$Main$viewControlsReset = A2(
 			elm$html$Html$text('Reset')
 		]));
 var author$project$Main$NextEntry = {$: 'NextEntry'};
+var author$project$Main$PreviousEntry = {$: 'PreviousEntry'};
 var elm$html$Html$li = _VirtualDom_node('li');
 var elm$html$Html$ul = _VirtualDom_node('ul');
 var author$project$Main$viewQuizNavigation = A2(
@@ -5551,7 +5558,7 @@ var author$project$Main$viewQuizNavigation = A2(
 			elm$html$Html$li,
 			_List_fromArray(
 				[
-					elm$html$Html$Events$onClick(author$project$Main$Reset)
+					elm$html$Html$Events$onClick(author$project$Main$PreviousEntry)
 				]),
 			_List_fromArray(
 				[
@@ -5613,42 +5620,9 @@ var author$project$Main$viewControls = F2(
 					author$project$Main$viewControlsReset
 				]));
 	});
-var author$project$Main$CheckAll = function (a) {
-	return {$: 'CheckAll', a: a};
-};
-var author$project$Main$Check = F2(
-	function (a, b) {
-		return {$: 'Check', a: a, b: b};
-	});
-var author$project$Main$Delete = function (a) {
-	return {$: 'Delete', a: a};
-};
-var author$project$Main$EditingEntry = F2(
-	function (a, b) {
-		return {$: 'EditingEntry', a: a, b: b};
-	});
-var author$project$Main$UpdateEntry = F2(
-	function (a, b) {
-		return {$: 'UpdateEntry', a: a, b: b};
-	});
-var elm$json$Json$Decode$field = _Json_decodeField;
-var elm$json$Json$Decode$int = _Json_decodeInt;
-var elm$html$Html$Events$keyCode = A2(elm$json$Json$Decode$field, 'keyCode', elm$json$Json$Decode$int);
-var elm$json$Json$Decode$andThen = _Json_andThen;
-var elm$json$Json$Decode$fail = _Json_fail;
-var author$project$Main$onEnter = function (msg) {
-	var isEnter = function (code) {
-		return (code === 13) ? elm$json$Json$Decode$succeed(msg) : elm$json$Json$Decode$fail('not ENTER');
-	};
-	return A2(
-		elm$html$Html$Events$on,
-		'keydown',
-		A2(elm$json$Json$Decode$andThen, isEnter, elm$html$Html$Events$keyCode));
-};
 var elm$html$Html$div = _VirtualDom_node('div');
 var elm$html$Html$input = _VirtualDom_node('input');
 var elm$html$Html$label = _VirtualDom_node('label');
-var elm$html$Html$Attributes$checked = elm$html$Html$Attributes$boolProperty('checked');
 var elm$core$Tuple$second = function (_n0) {
 	var y = _n0.b;
 	return y;
@@ -5663,55 +5637,8 @@ var elm$html$Html$Attributes$classList = function (classes) {
 				elm$core$Tuple$first,
 				A2(elm$core$List$filter, elm$core$Tuple$second, classes))));
 };
-var elm$html$Html$Attributes$id = elm$html$Html$Attributes$stringProperty('id');
-var elm$html$Html$Attributes$name = elm$html$Html$Attributes$stringProperty('name');
 var elm$html$Html$Attributes$type_ = elm$html$Html$Attributes$stringProperty('type');
-var elm$html$Html$Attributes$value = elm$html$Html$Attributes$stringProperty('value');
-var elm$html$Html$Events$onBlur = function (msg) {
-	return A2(
-		elm$html$Html$Events$on,
-		'blur',
-		elm$json$Json$Decode$succeed(msg));
-};
-var elm$html$Html$Events$onDoubleClick = function (msg) {
-	return A2(
-		elm$html$Html$Events$on,
-		'dblclick',
-		elm$json$Json$Decode$succeed(msg));
-};
-var elm$html$Html$Events$alwaysStop = function (x) {
-	return _Utils_Tuple2(x, true);
-};
-var elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
-	return {$: 'MayStopPropagation', a: a};
-};
-var elm$html$Html$Events$stopPropagationOn = F2(
-	function (event, decoder) {
-		return A2(
-			elm$virtual_dom$VirtualDom$on,
-			event,
-			elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
-	});
-var elm$json$Json$Decode$at = F2(
-	function (fields, decoder) {
-		return A3(elm$core$List$foldr, elm$json$Json$Decode$field, decoder, fields);
-	});
-var elm$json$Json$Decode$string = _Json_decodeString;
-var elm$html$Html$Events$targetValue = A2(
-	elm$json$Json$Decode$at,
-	_List_fromArray(
-		['target', 'value']),
-	elm$json$Json$Decode$string);
-var elm$html$Html$Events$onInput = function (tagger) {
-	return A2(
-		elm$html$Html$Events$stopPropagationOn,
-		'input',
-		A2(
-			elm$json$Json$Decode$map,
-			elm$html$Html$Events$alwaysStop,
-			A2(elm$json$Json$Decode$map, tagger, elm$html$Html$Events$targetValue)));
-};
-var author$project$Main$viewEntry = function (todo) {
+var author$project$Main$viewChoice = function (choice) {
 	return A2(
 		elm$html$Html$li,
 		_List_fromArray(
@@ -5719,8 +5646,8 @@ var author$project$Main$viewEntry = function (todo) {
 				elm$html$Html$Attributes$classList(
 				_List_fromArray(
 					[
-						_Utils_Tuple2('completed', todo.completed),
-						_Utils_Tuple2('editing', todo.editing)
+						_Utils_Tuple2('completed', false),
+						_Utils_Tuple2('editing', false)
 					]))
 			]),
 		_List_fromArray(
@@ -5739,156 +5666,78 @@ var author$project$Main$viewEntry = function (todo) {
 							[
 								elm$html$Html$Attributes$class('toggle'),
 								elm$html$Html$Attributes$type_('checkbox'),
-								elm$html$Html$Attributes$checked(todo.completed),
-								elm$html$Html$Events$onClick(
-								A2(author$project$Main$Check, todo.id, !todo.completed))
+								elm$html$Html$Events$onClick(author$project$Main$NextEntry)
 							]),
 						_List_Nil),
 						A2(
 						elm$html$Html$label,
+						_List_Nil,
 						_List_fromArray(
 							[
-								elm$html$Html$Events$onDoubleClick(
-								A2(author$project$Main$EditingEntry, todo.id, true))
-							]),
-						_List_fromArray(
-							[
-								elm$html$Html$text(todo.description)
+								elm$html$Html$text(choice)
 							])),
 						A2(
 						elm$html$Html$button,
 						_List_fromArray(
 							[
 								elm$html$Html$Attributes$class('destroy'),
-								elm$html$Html$Events$onClick(
-								author$project$Main$Delete(todo.id))
+								elm$html$Html$Events$onClick(author$project$Main$NextEntry)
 							]),
 						_List_Nil)
-					])),
-				A2(
-				elm$html$Html$input,
-				_List_fromArray(
-					[
-						elm$html$Html$Attributes$class('edit'),
-						elm$html$Html$Attributes$value(todo.description),
-						elm$html$Html$Attributes$name('title'),
-						elm$html$Html$Attributes$id(
-						'todo-' + elm$core$String$fromInt(todo.id)),
-						elm$html$Html$Events$onInput(
-						author$project$Main$UpdateEntry(todo.id)),
-						elm$html$Html$Events$onBlur(
-						A2(author$project$Main$EditingEntry, todo.id, false)),
-						author$project$Main$onEnter(
-						A2(author$project$Main$EditingEntry, todo.id, false))
-					]),
-				_List_Nil)
+					]))
 			]));
 };
-var author$project$Main$viewKeyedEntry = function (todo) {
+var author$project$Main$viewKeyedChoice = function (choice) {
 	return _Utils_Tuple2(
-		elm$core$String$fromInt(todo.id),
-		A2(elm$html$Html$Lazy$lazy, author$project$Main$viewEntry, todo));
+		choice,
+		A2(elm$html$Html$Lazy$lazy, author$project$Main$viewChoice, choice));
 };
-var elm$core$List$any = F2(
-	function (isOkay, list) {
-		any:
-		while (true) {
-			if (!list.b) {
-				return false;
-			} else {
-				var x = list.a;
-				var xs = list.b;
-				if (isOkay(x)) {
-					return true;
-				} else {
-					var $temp$isOkay = isOkay,
-						$temp$list = xs;
-					isOkay = $temp$isOkay;
-					list = $temp$list;
-					continue any;
-				}
-			}
-		}
-	});
-var elm$core$List$all = F2(
-	function (isOkay, list) {
-		return !A2(
-			elm$core$List$any,
-			A2(elm$core$Basics$composeL, elm$core$Basics$not, isOkay),
-			list);
-	});
 var elm$html$Html$section = _VirtualDom_node('section');
 var elm$html$Html$Attributes$for = elm$html$Html$Attributes$stringProperty('htmlFor');
-var elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
-var elm$html$Html$Attributes$style = elm$virtual_dom$VirtualDom$style;
+var elm$html$Html$Attributes$name = elm$html$Html$Attributes$stringProperty('name');
 var elm$virtual_dom$VirtualDom$keyedNode = function (tag) {
 	return _VirtualDom_keyedNode(
 		_VirtualDom_noScript(tag));
 };
 var elm$html$Html$Keyed$node = elm$virtual_dom$VirtualDom$keyedNode;
 var elm$html$Html$Keyed$ul = elm$html$Html$Keyed$node('ul');
-var author$project$Main$viewEntries = F2(
-	function (visibility, entries) {
-		var isVisible = function (todo) {
-			switch (visibility) {
-				case 'Completed':
-					return todo.completed;
-				case 'Active':
-					return !todo.completed;
-				default:
-					return true;
-			}
-		};
-		var cssVisibility = elm$core$List$isEmpty(entries) ? 'hidden' : 'visible';
-		var allCompleted = A2(
-			elm$core$List$all,
-			function ($) {
-				return $.completed;
-			},
-			entries);
-		return A2(
-			elm$html$Html$section,
-			_List_fromArray(
-				[
-					elm$html$Html$Attributes$class('main'),
-					A2(elm$html$Html$Attributes$style, 'visibility', cssVisibility)
-				]),
-			_List_fromArray(
-				[
-					A2(
-					elm$html$Html$input,
-					_List_fromArray(
-						[
-							elm$html$Html$Attributes$class('toggle-all'),
-							elm$html$Html$Attributes$type_('checkbox'),
-							elm$html$Html$Attributes$name('toggle'),
-							elm$html$Html$Attributes$checked(allCompleted),
-							elm$html$Html$Events$onClick(
-							author$project$Main$CheckAll(!allCompleted))
-						]),
-					_List_Nil),
-					A2(
-					elm$html$Html$label,
-					_List_fromArray(
-						[
-							elm$html$Html$Attributes$for('toggle-all')
-						]),
-					_List_fromArray(
-						[
-							elm$html$Html$text('Mark all as complete')
-						])),
-					A2(
-					elm$html$Html$Keyed$ul,
-					_List_fromArray(
-						[
-							elm$html$Html$Attributes$class('todo-list')
-						]),
-					A2(
-						elm$core$List$map,
-						author$project$Main$viewKeyedEntry,
-						A2(elm$core$List$filter, isVisible, entries)))
-				]));
-	});
+var author$project$Main$viewChoices = function (choices) {
+	return A2(
+		elm$html$Html$section,
+		_List_fromArray(
+			[
+				elm$html$Html$Attributes$class('main')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				elm$html$Html$input,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('toggle-all'),
+						elm$html$Html$Attributes$type_('checkbox'),
+						elm$html$Html$Attributes$name('toggle')
+					]),
+				_List_Nil),
+				A2(
+				elm$html$Html$label,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$for('toggle-all')
+					]),
+				_List_fromArray(
+					[
+						elm$html$Html$text('Mark all as complete')
+					])),
+				A2(
+				elm$html$Html$Keyed$ul,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('todo-list')
+					]),
+				A2(elm$core$List$map, author$project$Main$viewKeyedChoice, choices))
+			]));
+};
 var elm$core$Array$fromListHelp = F3(
 	function (list, nodeList, nodeListSize) {
 		fromListHelp:
@@ -5968,7 +5817,9 @@ var elm$core$Array$get = F2(
 	});
 var elm$html$Html$h1 = _VirtualDom_node('h1');
 var elm$html$Html$header = _VirtualDom_node('header');
-var author$project$Main$viewHeader = F2(
+var elm$html$Html$Attributes$autofocus = elm$html$Html$Attributes$boolProperty('autofocus');
+var elm$html$Html$Attributes$placeholder = elm$html$Html$Attributes$stringProperty('placeholder');
+var author$project$Main$viewEntry = F2(
 	function (current, entries) {
 		var examArr = elm$core$Array$fromList(entries);
 		var entry = A2(elm$core$Array$get, current, examArr);
@@ -5983,24 +5834,50 @@ var author$project$Main$viewHeader = F2(
 		var title = _Utils_ap(
 			desc,
 			elm$core$String$fromInt(current));
+		var choices = function () {
+			if (entry.$ === 'Just') {
+				var e = entry.a;
+				return e.answers;
+			} else {
+				return _List_Nil;
+			}
+		}();
 		return A2(
-			elm$html$Html$header,
-			_List_fromArray(
-				[
-					elm$html$Html$Attributes$class('header')
-				]),
+			elm$html$Html$div,
+			_List_Nil,
 			_List_fromArray(
 				[
 					A2(
-					elm$html$Html$h1,
-					_List_Nil,
+					elm$html$Html$header,
 					_List_fromArray(
 						[
-							elm$html$Html$text('quiz')
+							elm$html$Html$Attributes$class('header')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							elm$html$Html$h1,
+							_List_Nil,
+							_List_fromArray(
+								[
+									elm$html$Html$text('quiz')
+								])),
+							A2(
+							elm$html$Html$input,
+							_List_fromArray(
+								[
+									elm$html$Html$Attributes$class('new-todo'),
+									elm$html$Html$Attributes$placeholder(title),
+									elm$html$Html$Attributes$autofocus(true),
+									elm$html$Html$Attributes$name('newTodo')
+								]),
+							_List_Nil)
 						])),
-					elm$html$Html$text(title)
+					author$project$Main$viewChoices(choices)
 				]));
 	});
+var elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
+var elm$html$Html$Attributes$style = elm$virtual_dom$VirtualDom$style;
 var elm$virtual_dom$VirtualDom$lazy2 = _VirtualDom_lazy2;
 var elm$html$Html$Lazy$lazy2 = elm$virtual_dom$VirtualDom$lazy2;
 var author$project$Main$view = function (model) {
@@ -6021,8 +5898,7 @@ var author$project$Main$view = function (model) {
 					]),
 				_List_fromArray(
 					[
-						A3(elm$html$Html$Lazy$lazy2, author$project$Main$viewHeader, model.current, model.entries),
-						A3(elm$html$Html$Lazy$lazy2, author$project$Main$viewEntries, model.visibility, model.entries),
+						A3(elm$html$Html$Lazy$lazy2, author$project$Main$viewEntry, model.current, model.entries),
 						A3(elm$html$Html$Lazy$lazy2, author$project$Main$viewControls, model.visibility, model.entries)
 					])),
 				author$project$Main$infoFooter
@@ -6031,10 +5907,14 @@ var author$project$Main$view = function (model) {
 var elm$browser$Browser$document = _Browser_document;
 var elm$core$Platform$Sub$batch = _Platform_batch;
 var elm$core$Platform$Sub$none = elm$core$Platform$Sub$batch(_List_Nil);
+var elm$json$Json$Decode$andThen = _Json_andThen;
 var elm$json$Json$Decode$bool = _Json_decodeBool;
+var elm$json$Json$Decode$field = _Json_decodeField;
+var elm$json$Json$Decode$int = _Json_decodeInt;
 var elm$json$Json$Decode$list = _Json_decodeList;
 var elm$json$Json$Decode$null = _Json_decodeNull;
 var elm$json$Json$Decode$oneOf = _Json_oneOf;
+var elm$json$Json$Decode$string = _Json_decodeString;
 var author$project$Main$main = elm$browser$Browser$document(
 	{
 		init: author$project$Main$init,

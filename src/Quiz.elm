@@ -121,6 +121,7 @@ type Msg
     | Reset
     | Add
     | NextEntry
+    | PreviousEntry
     | Delete Int
     | DeleteComplete
     | Check Int Bool
@@ -152,7 +153,14 @@ update msg model =
 
         NextEntry ->
             ( { model
-                | current = model.current +1
+                | current = model.current + 1
+              }
+            , Cmd.none
+            )
+
+        PreviousEntry ->
+            ( { model
+                | current = model.current - 1
               }
             , Cmd.none
             )
@@ -251,15 +259,14 @@ view model =
         ]
         [ section
             [ class "todoapp" ]
-            [ lazy2 viewHeader model.current model.entries
-            , lazy2 viewEntries model.visibility model.entries
+            [ lazy2 viewEntry model.current model.entries
             , lazy2 viewControls model.visibility model.entries
             ]
         , infoFooter
         ]
 
-viewHeader : Int -> List Entry -> Html msg
-viewHeader current entries =
+viewEntry : Int -> List Entry -> Html Msg
+viewEntry current entries =
     let
         examArr = Array.fromList entries
         entry = Array.get current examArr
@@ -270,14 +277,29 @@ viewHeader current entries =
                 Nothing ->
                     "Unknown"
 
+        choices =
+            case entry of
+                Just e ->
+                    e.answers
+                Nothing ->
+                    []
+
         title = desc ++ (String.fromInt current)
     in
-      header
-          [ class "header" ]
-          [ h1 [] [ text "quiz" ]
-          , text title
-          ]
-
+        div [] [
+            header
+                [ class "header" ]
+                [ h1 [] [ text "quiz" ]
+                , input
+                    [ class "new-todo"
+                    , placeholder title
+                    , autofocus True
+                    , name "newTodo"
+                    ]
+                    []
+                ]
+            , viewChoices choices
+        ]
 onEnter : Msg -> Attribute Msg
 onEnter msg =
     let
@@ -290,96 +312,52 @@ onEnter msg =
         on "keydown" (Json.andThen isEnter keyCode)
 
 
-
--- VIEW ALL ENTRIES
-
-
-viewEntries : String -> List Entry -> Html Msg
-viewEntries visibility entries =
-    let
-        isVisible todo =
-            case visibility of
-                "Completed" ->
-                    todo.completed
-
-                "Active" ->
-                    not todo.completed
-
-                _ ->
-                    True
-
-        allCompleted =
-            List.all .completed entries
-
-        cssVisibility =
-            if List.isEmpty entries then
-                "hidden"
-            else
-                "visible"
-    in
-        section
-            [ class "main"
-            , style "visibility" cssVisibility
+viewChoices : List String -> Html Msg
+viewChoices choices =
+    section
+        [ class "main"]
+        [ input
+            [ class "toggle-all"
+            , type_ "checkbox"
+            , name "toggle"
             ]
-            [ input
-                [ class "toggle-all"
-                , type_ "checkbox"
-                , name "toggle"
-                , checked allCompleted
-                , onClick (CheckAll (not allCompleted))
-                ]
-                []
-            , label
-                [ for "toggle-all" ]
-                [ text "Mark all as complete" ]
-            , Keyed.ul [ class "todo-list" ] <|
-                List.map viewKeyedEntry (List.filter isVisible entries)
-            ]
+            []
+        , label
+            [ for "toggle-all" ]
+            [ text "Mark all as complete" ]
+        , Keyed.ul [ class "todo-list" ] <|
+            List.map viewKeyedChoice choices
+        ]
 
+viewKeyedChoice : String -> ( String, Html Msg )
+viewKeyedChoice choice =
+    ( choice, lazy viewChoice choice )
 
-
--- VIEW INDIVIDUAL ENTRIES
-
-
-viewKeyedEntry : Entry -> ( String, Html Msg )
-viewKeyedEntry todo =
-    ( String.fromInt todo.id, lazy viewEntry todo )
-
-
-viewEntry : Entry -> Html Msg
-viewEntry todo =
+viewChoice : String -> Html Msg
+viewChoice choice =
     li
-        [ classList [ ( "completed", todo.completed ), ( "editing", todo.editing ) ] ]
+        [ classList [ ( "completed", False ), ( "editing", False ) ] ]
         [ div
             [ class "view" ]
             [ input
                 [ class "toggle"
                 , type_ "checkbox"
-                , checked todo.completed
-                , onClick (Check todo.id (not todo.completed))
+                , onClick NextEntry
                 ]
                 []
             , label
-                [ onDoubleClick (EditingEntry todo.id True) ]
-                [ text todo.description ]
+                []
+                [ text choice ]
             , button
                 [ class "destroy"
-                , onClick (Delete todo.id)
+                , onClick NextEntry
                 ]
                 []
             ]
-        , input
-            [ class "edit"
-            , value todo.description
-            , name "title"
-            , id ("todo-" ++ String.fromInt todo.id)
-            , onInput (UpdateEntry todo.id)
-            , onBlur (EditingEntry todo.id False)
-            , onEnter (EditingEntry todo.id False)
-            ]
-            []
         ]
 
+
+-- VIEW ALL ENTRIES
 
 
 -- VIEW CONTROLS AND FOOTER
@@ -425,7 +403,7 @@ viewQuizNavigation =
     ul
         [ class "filters" ]
         [ li
-            [ onClick Reset ]
+            [ onClick PreviousEntry ]
             [ text ("<<") ]
         , text " "
         , text " | "

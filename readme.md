@@ -8,7 +8,7 @@ Features to build:
 
 * [x] an exam contains many entries
 * [ ] entries contain a question and multiple choices and a correct answer
-* [ ] UI will display one entry at a time
+* [x] UI will display one entry at a time
 * [ ] can select a choice for each entry
 * [x] can navigate through entries in exam
 * [ ] grade the exam, show number of correct/wrong
