@@ -51,7 +51,6 @@ updateWithStorage msg model =
         )
 
 
-
 -- MODEL
 
 
@@ -60,7 +59,7 @@ type alias Model =
     { entries : List Entry
     , current: Int
     , field : String
-    , uid : Int
+    , uid : String
     , visibility : String
     }
 
@@ -72,29 +71,31 @@ type alias Entry =
     , correct: Int
     , completed : Bool
     , editing : Bool
-    , id : Int
+    , id : String
     }
 
 
 emptyModel : Model
 emptyModel =
-    { entries = []
+    { entries = [
+      newEntry "Empty model" ["No choice"] 0 "default-uid-0"
+      ]
     , current = 0
     , visibility = "All"
     , field = ""
-    , uid = 0
+    , uid = "default-"
     }
 
 
-newEntry : String -> List String -> Int -> Entry
-newEntry desc answers correct =
+newEntry : String -> List String -> Int -> String -> Entry
+newEntry desc answers correct uid =
     { description = desc
     , answers = answers
     , selected = -1
     , correct = correct
     , completed = False
     , editing = False
-    , id = 102
+    , id = uid
     }
 
 
@@ -116,18 +117,11 @@ to them.
 type Msg
     = NoOp
     | UpdateField String
-    | EditingEntry Int Bool
-    | UpdateEntry Int String
+    | UpdateEntry String String
     | Reset
-    | Add
     | NextEntry
     | PreviousEntry
-    | Delete Int
-    | DeleteComplete
-    | Check Int Bool
-    | CheckAll Bool
-    | ChangeVisibility String
-
+    | SelectAnswer Int String
 
 
 -- How we update our Model on a given Msg?
@@ -139,13 +133,13 @@ update msg model =
 
         Reset ->
             ( { model
-                | uid = model.uid +1
+                | uid = "default-uid-"
                 , current = 0
                 , field = ""
                 , entries = [
-                  newEntry "What is your favorite color?" ["Blue", "Red","Green","Orange"] 0
-                  , newEntry "Where are you from?" ["Dunn","Eden","Fern"] 1
-                  , newEntry "When is the party?" ["Gordon","Hell","Indigo"] 2
+                  newEntry "What is your favorite color?" ["Blue", "Red","Green","Orange"] 0 "default-uid-0"
+                  , newEntry "Where are you from?" ["Dunn","Eden","Fern"] 1 "default-uid-1"
+                  , newEntry "When is the party?" ["Gordon","Hell","Indigo"] 2 "default-uid-2"
                 ]
               }
             , Cmd.none
@@ -165,16 +159,15 @@ update msg model =
             , Cmd.none
             )
 
-        Add ->
-            ( { model
-                | uid = model.uid + 1
-                , field = ""
-                , entries =
-                    if String.isEmpty model.field then
-                        model.entries
+        SelectAnswer selectedId uid ->
+            let
+                updateEntry e =
+                    if e.id == uid then
+                        { e | selected = selectedId }
                     else
-                        model.entries ++ [ newEntry model.field [] 1 ]
-              }
+                        e
+            in
+            ( { model | entries = List.map updateEntry model.entries }
             , Cmd.none
             )
 
@@ -183,20 +176,6 @@ update msg model =
             , Cmd.none
             )
 
-        EditingEntry id isEditing ->
-            let
-                updateEntry t =
-                    if t.id == id then
-                        { t | editing = isEditing }
-                    else
-                        t
-
-                focus =
-                    Dom.focus ("todo-" ++ String.fromInt id)
-            in
-            ( { model | entries = List.map updateEntry model.entries }
-            , Task.attempt (\_ -> NoOp) focus
-            )
 
         UpdateEntry id task ->
             let
@@ -209,43 +188,6 @@ update msg model =
             ( { model | entries = List.map updateEntry model.entries }
             , Cmd.none
             )
-
-        Delete id ->
-            ( { model | entries = List.filter (\t -> t.id /= id) model.entries }
-            , Cmd.none
-            )
-
-        DeleteComplete ->
-            ( { model | entries = List.filter (not << .completed) model.entries }
-            , Cmd.none
-            )
-
-        Check id isCompleted ->
-            let
-                updateEntry t =
-                    if t.id == id then
-                        { t | completed = isCompleted }
-                    else
-                        t
-            in
-            ( { model | entries = List.map updateEntry model.entries }
-            , Cmd.none
-            )
-
-        CheckAll isCompleted ->
-            let
-                updateEntry t =
-                    { t | completed = isCompleted }
-            in
-            ( { model | entries = List.map updateEntry model.entries }
-            , Cmd.none
-            )
-
-        ChangeVisibility visibility ->
-            ( { model | visibility = visibility }
-            , Cmd.none
-            )
-
 
 
 -- VIEW
@@ -289,7 +231,7 @@ viewEntry current entries =
         div [] [
             header
                 [ class "header" ]
-                [ h1 [] [ text "quiz" ]
+                [ h1 [] [ text "elm-quiz" ]
                 , input
                     [ class "new-todo"
                     , placeholder title
@@ -300,6 +242,7 @@ viewEntry current entries =
                 ]
             , viewChoices choices
         ]
+
 onEnter : Msg -> Attribute Msg
 onEnter msg =
     let
