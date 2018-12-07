@@ -399,9 +399,9 @@ viewControlsCount entriesLeft =
     let
         item_ =
             if entriesLeft == 1 then
-                " item"
+                " question"
             else
-                " items"
+                " questions"
     in
         span
             [ class "todo-count" ]
@@ -454,13 +454,9 @@ viewControlsReset =
 infoFooter : Html msg
 infoFooter =
     footer [ class "info" ]
-        [ p [] [ text "Quiz taking" ]
+        [ p [] [ text "elm-quiz" ]
         , p []
-            [ text "Based on "
-            , a [ href "https://github.com/evancz" ] [ text "Evan Czaplicki" ]
-            ]
-        , p []
-            [ text "Part of "
-            , a [ href "http://mox" ] [ text "Mox Quiz" ]
+            [ text "GitHub repo: "
+            , a [ href "https://github.com/kyledinh/elm-quiz" ] [ text "Kyle Dinh" ]
             ]
         ]

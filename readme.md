@@ -1,18 +1,26 @@
-# TodoMVC in Elm - [Try It!](http://evancz.github.io/elm-todomvc)
+# Elm Quiz
 
-All of the Elm code lives in `src/Main.elm` and relies on the [elm/html][html] library.
+> Goal: build a quiz taking app, use json file as source for questions/answers
 
-[html]: https://package.elm-lang.org/packages/elm/html/latest
+This project is based on [TodoMVC](https://github.com/evancz/elm-todomvc) - [Try TodoMVC!](http://evancz.github.io/elm-todomvc)
 
-There also is a port handler set up in `index.html` to store the Elm application's state in `localStorage` on every update.
+Features to build:
 
+* [ ] an exam contains many entries
+* [ ] entries contain a question and multiple choices and a correct answer
+* [ ] UI will display one entry at a time
+* [ ] can select a choice for each entry
+* [ ] can navigate through entries in exam
+* [ ] grade the exam, show number of correct/wrong
+* [ ] source the exam from JSON file
+* [ ] can reset the exam
+* [ ] hints/clues/notes for each entry
+* [ ] customize the UI/CSS for unique look
 
-## Build Instructions
+## Dev Notes
 
-Run the following command from the root of this project:
+* Use Elm 19 to build - `/build.sh` or `elm make src/Quiz.elm --output=elm.js`
+* Then open `index.html` in your browser!
 
-```bash
-elm make src/Main.elm --output=elm.js
-```
-
-Then open `index.html` in your browser!
+Docker command:
+* `docker run -it -v ${PWD}:/usr/src/app -p 8080:8080 kyledinh/elm:latest bash`
