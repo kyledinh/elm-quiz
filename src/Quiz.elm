@@ -57,6 +57,7 @@ updateWithStorage msg model =
 -- The full application state of our todo app.
 type alias Model =
     { entries : List Entry
+    , current: Int
     , field : String
     , uid : Int
     , visibility : String
@@ -65,6 +66,9 @@ type alias Model =
 
 type alias Entry =
     { description : String
+    , answers : List String
+    , selected: Int
+    , correct: Int
     , completed : Bool
     , editing : Bool
     , id : Int
@@ -74,18 +78,22 @@ type alias Entry =
 emptyModel : Model
 emptyModel =
     { entries = []
+    , current = 0
     , visibility = "All"
     , field = ""
     , uid = 0
     }
 
 
-newEntry : String -> Int -> Entry
-newEntry desc id =
+newEntry : String -> List String -> Int -> Entry
+newEntry desc answers correct =
     { description = desc
+    , answers = answers
+    , selected = -1
+    , correct = correct
     , completed = False
     , editing = False
-    , id = id
+    , id = 102
     }
 
 
@@ -131,9 +139,9 @@ update msg model =
                 | uid = model.uid +1
                 , field = ""
                 , entries = [
-                  newEntry "Alpha" model.uid
-                  , newEntry "Beta" model.uid
-                  , newEntry "Delta" model.uid
+                  newEntry "Alpha" ["Apple", "Bakker","Charlie"] 0
+                  , newEntry "Beta" ["Dunn","Eden","Fern"] 1
+                  , newEntry "Delta" ["Gordon","Hell","Indigo"] 2
                 ]
               }
             , Cmd.none
@@ -147,7 +155,7 @@ update msg model =
                     if String.isEmpty model.field then
                         model.entries
                     else
-                        model.entries ++ [ newEntry model.field model.uid ]
+                        model.entries ++ [ newEntry model.field [] 1 ]
               }
             , Cmd.none
             )
