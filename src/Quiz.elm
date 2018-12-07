@@ -12,6 +12,7 @@ This clean division of concerns is a core part of Elm. You can read more about
 this in <http://guide.elm-lang.org/architecture/index.html>
 -}
 
+import Array
 import Browser
 import Browser.Dom as Dom
 import Html exposing (..)
@@ -119,6 +120,7 @@ type Msg
     | UpdateEntry Int String
     | Reset
     | Add
+    | NextEntry
     | Delete Int
     | DeleteComplete
     | Check Int Bool
@@ -137,12 +139,20 @@ update msg model =
         Reset ->
             ( { model
                 | uid = model.uid +1
+                , current = 0
                 , field = ""
                 , entries = [
-                  newEntry "Alpha" ["Apple", "Bakker","Charlie"] 0
-                  , newEntry "Beta" ["Dunn","Eden","Fern"] 1
-                  , newEntry "Delta" ["Gordon","Hell","Indigo"] 2
+                  newEntry "What is your favorite color?" ["Apple", "Bakker","Charlie"] 0
+                  , newEntry "Where are you from?" ["Dunn","Eden","Fern"] 1
+                  , newEntry "When is the party?" ["Gordon","Hell","Indigo"] 2
                 ]
+              }
+            , Cmd.none
+            )
+
+        NextEntry ->
+            ( { model
+                | current = model.current +1
               }
             , Cmd.none
             )
@@ -241,31 +251,32 @@ view model =
         ]
         [ section
             [ class "todoapp" ]
-            [ lazy viewInput model.field
+            [ lazy2 viewHeader model.current model.entries
             , lazy2 viewEntries model.visibility model.entries
             , lazy2 viewControls model.visibility model.entries
             ]
         , infoFooter
         ]
 
+viewHeader : Int -> List Entry -> Html msg
+viewHeader current entries =
+    let
+        examArr = Array.fromList entries
+        entry = Array.get current examArr
+        desc =
+            case entry of
+                Just e ->
+                    e.description
+                Nothing ->
+                    "Unknown"
 
-viewInput : String -> Html Msg
-viewInput task =
-    header
-        [ class "header" ]
-        [ h1 [] [ text "quiz" ]
-        , input
-            [ class "new-todo"
-            , placeholder "What needs to be done?"
-            , autofocus True
-            , value task
-            , name "newTodo"
-            , onInput UpdateField
-            , onEnter Add
-            ]
-            []
-        ]
-
+        title = desc ++ (String.fromInt current)
+    in
+      header
+          [ class "header" ]
+          [ h1 [] [ text "quiz" ]
+          , text title
+          ]
 
 onEnter : Msg -> Attribute Msg
 onEnter msg =
@@ -388,8 +399,7 @@ viewControls visibility entries =
             , hidden (List.isEmpty entries)
             ]
             [ lazy viewControlsCount entriesLeft
-            , lazy viewControlsFilters visibility
-            , lazy viewControlsClear entriesCompleted
+            , viewQuizNavigation
             , viewControlsReset
             ]
 
@@ -410,36 +420,21 @@ viewControlsCount entriesLeft =
             ]
 
 
-viewControlsFilters : String -> Html Msg
-viewControlsFilters visibility =
+viewQuizNavigation : Html Msg
+viewQuizNavigation =
     ul
         [ class "filters" ]
-        [ visibilitySwap "#/" "All" visibility
+        [ li
+            [ onClick Reset ]
+            [ text ("<<") ]
         , text " "
-        , visibilitySwap "#/active" "Active" visibility
+        , text " | "
         , text " "
-        , visibilitySwap "#/completed" "Completed" visibility
+        , li
+            [ onClick NextEntry ]
+            [ text (">>") ]
         ]
 
-
-visibilitySwap : String -> String -> String -> Html Msg
-visibilitySwap uri visibility actualVisibility =
-    li
-        [ onClick (ChangeVisibility visibility) ]
-        [ a [ href uri, classList [ ( "selected", visibility == actualVisibility ) ] ]
-            [ text visibility ]
-        ]
-
-
-viewControlsClear : Int -> Html Msg
-viewControlsClear entriesCompleted =
-    button
-        [ class "clear-completed"
-        , hidden (entriesCompleted == 0)
-        , onClick DeleteComplete
-        ]
-        [ text ("Clear completed (" ++ String.fromInt entriesCompleted ++ ")")
-        ]
 
 viewControlsReset : Html Msg
 viewControlsReset =

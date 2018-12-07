@@ -4285,6 +4285,43 @@ function _Browser_load(url)
 		}
 	}));
 }
+
+
+
+var _Bitwise_and = F2(function(a, b)
+{
+	return a & b;
+});
+
+var _Bitwise_or = F2(function(a, b)
+{
+	return a | b;
+});
+
+var _Bitwise_xor = F2(function(a, b)
+{
+	return a ^ b;
+});
+
+function _Bitwise_complement(a)
+{
+	return ~a;
+};
+
+var _Bitwise_shiftLeftBy = F2(function(offset, a)
+{
+	return a << offset;
+});
+
+var _Bitwise_shiftRightBy = F2(function(offset, a)
+{
+	return a >> offset;
+});
+
+var _Bitwise_shiftRightZfBy = F2(function(offset, a)
+{
+	return a >>> offset;
+});
 var elm$core$Basics$EQ = {$: 'EQ'};
 var elm$core$Basics$LT = {$: 'LT'};
 var elm$core$Elm$JsArray$foldr = _JsArray_foldr;
@@ -5221,23 +5258,24 @@ var author$project$Main$update = F2(
 					_Utils_update(
 						model,
 						{
+							current: 0,
 							entries: _List_fromArray(
 								[
 									A3(
 									author$project$Main$newEntry,
-									'Alpha',
+									'What is your favorite color?',
 									_List_fromArray(
 										['Apple', 'Bakker', 'Charlie']),
 									0),
 									A3(
 									author$project$Main$newEntry,
-									'Beta',
+									'Where are you from?',
 									_List_fromArray(
 										['Dunn', 'Eden', 'Fern']),
 									1),
 									A3(
 									author$project$Main$newEntry,
-									'Delta',
+									'When is the party?',
 									_List_fromArray(
 										['Gordon', 'Hell', 'Indigo']),
 									2)
@@ -5245,6 +5283,12 @@ var author$project$Main$update = F2(
 							field: '',
 							uid: model.uid + 1
 						}),
+					elm$core$Platform$Cmd$none);
+			case 'NextEntry':
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{current: model.current + 1}),
 					elm$core$Platform$Cmd$none);
 			case 'Add':
 				return _Utils_Tuple2(
@@ -5419,85 +5463,26 @@ var author$project$Main$infoFooter = A2(
 			_List_Nil,
 			_List_fromArray(
 				[
-					elm$html$Html$text('Quiz taking')
+					elm$html$Html$text('elm-quiz')
 				])),
 			A2(
 			elm$html$Html$p,
 			_List_Nil,
 			_List_fromArray(
 				[
-					elm$html$Html$text('Based on '),
+					elm$html$Html$text('GitHub repo: '),
 					A2(
 					elm$html$Html$a,
 					_List_fromArray(
 						[
-							elm$html$Html$Attributes$href('https://github.com/evancz')
+							elm$html$Html$Attributes$href('https://github.com/kyledinh/elm-quiz')
 						]),
 					_List_fromArray(
 						[
-							elm$html$Html$text('Evan Czaplicki')
-						]))
-				])),
-			A2(
-			elm$html$Html$p,
-			_List_Nil,
-			_List_fromArray(
-				[
-					elm$html$Html$text('Part of '),
-					A2(
-					elm$html$Html$a,
-					_List_fromArray(
-						[
-							elm$html$Html$Attributes$href('http://mox')
-						]),
-					_List_fromArray(
-						[
-							elm$html$Html$text('Mox Quiz')
+							elm$html$Html$text('Kyle Dinh')
 						]))
 				]))
 		]));
-var author$project$Main$DeleteComplete = {$: 'DeleteComplete'};
-var elm$html$Html$button = _VirtualDom_node('button');
-var elm$html$Html$Attributes$boolProperty = F2(
-	function (key, bool) {
-		return A2(
-			_VirtualDom_property,
-			key,
-			elm$json$Json$Encode$bool(bool));
-	});
-var elm$html$Html$Attributes$hidden = elm$html$Html$Attributes$boolProperty('hidden');
-var elm$virtual_dom$VirtualDom$Normal = function (a) {
-	return {$: 'Normal', a: a};
-};
-var elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
-var elm$html$Html$Events$on = F2(
-	function (event, decoder) {
-		return A2(
-			elm$virtual_dom$VirtualDom$on,
-			event,
-			elm$virtual_dom$VirtualDom$Normal(decoder));
-	});
-var elm$html$Html$Events$onClick = function (msg) {
-	return A2(
-		elm$html$Html$Events$on,
-		'click',
-		elm$json$Json$Decode$succeed(msg));
-};
-var author$project$Main$viewControlsClear = function (entriesCompleted) {
-	return A2(
-		elm$html$Html$button,
-		_List_fromArray(
-			[
-				elm$html$Html$Attributes$class('clear-completed'),
-				elm$html$Html$Attributes$hidden(!entriesCompleted),
-				elm$html$Html$Events$onClick(author$project$Main$DeleteComplete)
-			]),
-		_List_fromArray(
-			[
-				elm$html$Html$text(
-				'Clear completed (' + (elm$core$String$fromInt(entriesCompleted) + ')'))
-			]));
-};
 var elm$html$Html$span = _VirtualDom_node('span');
 var elm$html$Html$strong = _VirtualDom_node('strong');
 var author$project$Main$viewControlsCount = function (entriesLeft) {
@@ -5521,72 +5506,25 @@ var author$project$Main$viewControlsCount = function (entriesLeft) {
 				elm$html$Html$text(item_ + ' left')
 			]));
 };
-var author$project$Main$ChangeVisibility = function (a) {
-	return {$: 'ChangeVisibility', a: a};
-};
-var elm$html$Html$li = _VirtualDom_node('li');
-var elm$core$Tuple$second = function (_n0) {
-	var y = _n0.b;
-	return y;
-};
-var elm$html$Html$Attributes$classList = function (classes) {
-	return elm$html$Html$Attributes$class(
-		A2(
-			elm$core$String$join,
-			' ',
-			A2(
-				elm$core$List$map,
-				elm$core$Tuple$first,
-				A2(elm$core$List$filter, elm$core$Tuple$second, classes))));
-};
-var author$project$Main$visibilitySwap = F3(
-	function (uri, visibility, actualVisibility) {
-		return A2(
-			elm$html$Html$li,
-			_List_fromArray(
-				[
-					elm$html$Html$Events$onClick(
-					author$project$Main$ChangeVisibility(visibility))
-				]),
-			_List_fromArray(
-				[
-					A2(
-					elm$html$Html$a,
-					_List_fromArray(
-						[
-							elm$html$Html$Attributes$href(uri),
-							elm$html$Html$Attributes$classList(
-							_List_fromArray(
-								[
-									_Utils_Tuple2(
-									'selected',
-									_Utils_eq(visibility, actualVisibility))
-								]))
-						]),
-					_List_fromArray(
-						[
-							elm$html$Html$text(visibility)
-						]))
-				]));
-	});
-var elm$html$Html$ul = _VirtualDom_node('ul');
-var author$project$Main$viewControlsFilters = function (visibility) {
-	return A2(
-		elm$html$Html$ul,
-		_List_fromArray(
-			[
-				elm$html$Html$Attributes$class('filters')
-			]),
-		_List_fromArray(
-			[
-				A3(author$project$Main$visibilitySwap, '#/', 'All', visibility),
-				elm$html$Html$text(' '),
-				A3(author$project$Main$visibilitySwap, '#/active', 'Active', visibility),
-				elm$html$Html$text(' '),
-				A3(author$project$Main$visibilitySwap, '#/completed', 'Completed', visibility)
-			]));
-};
 var author$project$Main$Reset = {$: 'Reset'};
+var elm$html$Html$button = _VirtualDom_node('button');
+var elm$virtual_dom$VirtualDom$Normal = function (a) {
+	return {$: 'Normal', a: a};
+};
+var elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
+var elm$html$Html$Events$on = F2(
+	function (event, decoder) {
+		return A2(
+			elm$virtual_dom$VirtualDom$on,
+			event,
+			elm$virtual_dom$VirtualDom$Normal(decoder));
+	});
+var elm$html$Html$Events$onClick = function (msg) {
+	return A2(
+		elm$html$Html$Events$on,
+		'click',
+		elm$json$Json$Decode$succeed(msg));
+};
 var author$project$Main$viewControlsReset = A2(
 	elm$html$Html$button,
 	_List_fromArray(
@@ -5598,6 +5536,41 @@ var author$project$Main$viewControlsReset = A2(
 		[
 			elm$html$Html$text('Reset')
 		]));
+var author$project$Main$NextEntry = {$: 'NextEntry'};
+var elm$html$Html$li = _VirtualDom_node('li');
+var elm$html$Html$ul = _VirtualDom_node('ul');
+var author$project$Main$viewQuizNavigation = A2(
+	elm$html$Html$ul,
+	_List_fromArray(
+		[
+			elm$html$Html$Attributes$class('filters')
+		]),
+	_List_fromArray(
+		[
+			A2(
+			elm$html$Html$li,
+			_List_fromArray(
+				[
+					elm$html$Html$Events$onClick(author$project$Main$Reset)
+				]),
+			_List_fromArray(
+				[
+					elm$html$Html$text('<<')
+				])),
+			elm$html$Html$text(' '),
+			elm$html$Html$text(' | '),
+			elm$html$Html$text(' '),
+			A2(
+			elm$html$Html$li,
+			_List_fromArray(
+				[
+					elm$html$Html$Events$onClick(author$project$Main$NextEntry)
+				]),
+			_List_fromArray(
+				[
+					elm$html$Html$text('>>')
+				]))
+		]));
 var elm$core$List$isEmpty = function (xs) {
 	if (!xs.b) {
 		return true;
@@ -5605,6 +5578,14 @@ var elm$core$List$isEmpty = function (xs) {
 		return false;
 	}
 };
+var elm$html$Html$Attributes$boolProperty = F2(
+	function (key, bool) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			elm$json$Json$Encode$bool(bool));
+	});
+var elm$html$Html$Attributes$hidden = elm$html$Html$Attributes$boolProperty('hidden');
 var elm$virtual_dom$VirtualDom$lazy = _VirtualDom_lazy;
 var elm$html$Html$Lazy$lazy = elm$virtual_dom$VirtualDom$lazy;
 var author$project$Main$viewControls = F2(
@@ -5628,8 +5609,7 @@ var author$project$Main$viewControls = F2(
 			_List_fromArray(
 				[
 					A2(elm$html$Html$Lazy$lazy, author$project$Main$viewControlsCount, entriesLeft),
-					A2(elm$html$Html$Lazy$lazy, author$project$Main$viewControlsFilters, visibility),
-					A2(elm$html$Html$Lazy$lazy, author$project$Main$viewControlsClear, entriesCompleted),
+					author$project$Main$viewQuizNavigation,
 					author$project$Main$viewControlsReset
 				]));
 	});
@@ -5669,6 +5649,20 @@ var elm$html$Html$div = _VirtualDom_node('div');
 var elm$html$Html$input = _VirtualDom_node('input');
 var elm$html$Html$label = _VirtualDom_node('label');
 var elm$html$Html$Attributes$checked = elm$html$Html$Attributes$boolProperty('checked');
+var elm$core$Tuple$second = function (_n0) {
+	var y = _n0.b;
+	return y;
+};
+var elm$html$Html$Attributes$classList = function (classes) {
+	return elm$html$Html$Attributes$class(
+		A2(
+			elm$core$String$join,
+			' ',
+			A2(
+				elm$core$List$map,
+				elm$core$Tuple$first,
+				A2(elm$core$List$filter, elm$core$Tuple$second, classes))));
+};
 var elm$html$Html$Attributes$id = elm$html$Html$Attributes$stringProperty('id');
 var elm$html$Html$Attributes$name = elm$html$Html$Attributes$stringProperty('name');
 var elm$html$Html$Attributes$type_ = elm$html$Html$Attributes$stringProperty('type');
@@ -5895,45 +5889,118 @@ var author$project$Main$viewEntries = F2(
 						A2(elm$core$List$filter, isVisible, entries)))
 				]));
 	});
-var author$project$Main$Add = {$: 'Add'};
-var author$project$Main$UpdateField = function (a) {
-	return {$: 'UpdateField', a: a};
+var elm$core$Array$fromListHelp = F3(
+	function (list, nodeList, nodeListSize) {
+		fromListHelp:
+		while (true) {
+			var _n0 = A2(elm$core$Elm$JsArray$initializeFromList, elm$core$Array$branchFactor, list);
+			var jsArray = _n0.a;
+			var remainingItems = _n0.b;
+			if (_Utils_cmp(
+				elm$core$Elm$JsArray$length(jsArray),
+				elm$core$Array$branchFactor) < 0) {
+				return A2(
+					elm$core$Array$builderToArray,
+					true,
+					{nodeList: nodeList, nodeListSize: nodeListSize, tail: jsArray});
+			} else {
+				var $temp$list = remainingItems,
+					$temp$nodeList = A2(
+					elm$core$List$cons,
+					elm$core$Array$Leaf(jsArray),
+					nodeList),
+					$temp$nodeListSize = nodeListSize + 1;
+				list = $temp$list;
+				nodeList = $temp$nodeList;
+				nodeListSize = $temp$nodeListSize;
+				continue fromListHelp;
+			}
+		}
+	});
+var elm$core$Array$fromList = function (list) {
+	if (!list.b) {
+		return elm$core$Array$empty;
+	} else {
+		return A3(elm$core$Array$fromListHelp, list, _List_Nil, 0);
+	}
 };
+var elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
+var elm$core$Array$bitMask = 4294967295 >>> (32 - elm$core$Array$shiftStep);
+var elm$core$Bitwise$and = _Bitwise_and;
+var elm$core$Elm$JsArray$unsafeGet = _JsArray_unsafeGet;
+var elm$core$Array$getHelp = F3(
+	function (shift, index, tree) {
+		getHelp:
+		while (true) {
+			var pos = elm$core$Array$bitMask & (index >>> shift);
+			var _n0 = A2(elm$core$Elm$JsArray$unsafeGet, pos, tree);
+			if (_n0.$ === 'SubTree') {
+				var subTree = _n0.a;
+				var $temp$shift = shift - elm$core$Array$shiftStep,
+					$temp$index = index,
+					$temp$tree = subTree;
+				shift = $temp$shift;
+				index = $temp$index;
+				tree = $temp$tree;
+				continue getHelp;
+			} else {
+				var values = _n0.a;
+				return A2(elm$core$Elm$JsArray$unsafeGet, elm$core$Array$bitMask & index, values);
+			}
+		}
+	});
+var elm$core$Bitwise$shiftLeftBy = _Bitwise_shiftLeftBy;
+var elm$core$Array$tailIndex = function (len) {
+	return (len >>> 5) << 5;
+};
+var elm$core$Basics$ge = _Utils_ge;
+var elm$core$Array$get = F2(
+	function (index, _n0) {
+		var len = _n0.a;
+		var startShift = _n0.b;
+		var tree = _n0.c;
+		var tail = _n0.d;
+		return ((index < 0) || (_Utils_cmp(index, len) > -1)) ? elm$core$Maybe$Nothing : ((_Utils_cmp(
+			index,
+			elm$core$Array$tailIndex(len)) > -1) ? elm$core$Maybe$Just(
+			A2(elm$core$Elm$JsArray$unsafeGet, elm$core$Array$bitMask & index, tail)) : elm$core$Maybe$Just(
+			A3(elm$core$Array$getHelp, startShift, index, tree)));
+	});
 var elm$html$Html$h1 = _VirtualDom_node('h1');
 var elm$html$Html$header = _VirtualDom_node('header');
-var elm$html$Html$Attributes$autofocus = elm$html$Html$Attributes$boolProperty('autofocus');
-var elm$html$Html$Attributes$placeholder = elm$html$Html$Attributes$stringProperty('placeholder');
-var author$project$Main$viewInput = function (task) {
-	return A2(
-		elm$html$Html$header,
-		_List_fromArray(
-			[
-				elm$html$Html$Attributes$class('header')
-			]),
-		_List_fromArray(
-			[
-				A2(
-				elm$html$Html$h1,
-				_List_Nil,
-				_List_fromArray(
-					[
-						elm$html$Html$text('quiz')
-					])),
-				A2(
-				elm$html$Html$input,
-				_List_fromArray(
-					[
-						elm$html$Html$Attributes$class('new-todo'),
-						elm$html$Html$Attributes$placeholder('What needs to be done?'),
-						elm$html$Html$Attributes$autofocus(true),
-						elm$html$Html$Attributes$value(task),
-						elm$html$Html$Attributes$name('newTodo'),
-						elm$html$Html$Events$onInput(author$project$Main$UpdateField),
-						author$project$Main$onEnter(author$project$Main$Add)
-					]),
-				_List_Nil)
-			]));
-};
+var author$project$Main$viewHeader = F2(
+	function (current, entries) {
+		var examArr = elm$core$Array$fromList(entries);
+		var entry = A2(elm$core$Array$get, current, examArr);
+		var desc = function () {
+			if (entry.$ === 'Just') {
+				var e = entry.a;
+				return e.description;
+			} else {
+				return 'Unknown';
+			}
+		}();
+		var title = _Utils_ap(
+			desc,
+			elm$core$String$fromInt(current));
+		return A2(
+			elm$html$Html$header,
+			_List_fromArray(
+				[
+					elm$html$Html$Attributes$class('header')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					elm$html$Html$h1,
+					_List_Nil,
+					_List_fromArray(
+						[
+							elm$html$Html$text('quiz')
+						])),
+					elm$html$Html$text(title)
+				]));
+	});
 var elm$virtual_dom$VirtualDom$lazy2 = _VirtualDom_lazy2;
 var elm$html$Html$Lazy$lazy2 = elm$virtual_dom$VirtualDom$lazy2;
 var author$project$Main$view = function (model) {
@@ -5954,7 +6021,7 @@ var author$project$Main$view = function (model) {
 					]),
 				_List_fromArray(
 					[
-						A2(elm$html$Html$Lazy$lazy, author$project$Main$viewInput, model.field),
+						A3(elm$html$Html$Lazy$lazy2, author$project$Main$viewHeader, model.current, model.entries),
 						A3(elm$html$Html$Lazy$lazy2, author$project$Main$viewEntries, model.visibility, model.entries),
 						A3(elm$html$Html$Lazy$lazy2, author$project$Main$viewControls, model.visibility, model.entries)
 					])),

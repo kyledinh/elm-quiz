@@ -6,14 +6,14 @@ This project is based on [TodoMVC](https://github.com/evancz/elm-todomvc) - [Try
 
 Features to build:
 
-* [ ] an exam contains many entries
+* [x] an exam contains many entries
 * [ ] entries contain a question and multiple choices and a correct answer
 * [ ] UI will display one entry at a time
 * [ ] can select a choice for each entry
-* [ ] can navigate through entries in exam
+* [x] can navigate through entries in exam
 * [ ] grade the exam, show number of correct/wrong
 * [ ] source the exam from JSON file
-* [ ] can reset the exam
+* [x] can reset the exam
 * [ ] hints/clues/notes for each entry
 * [ ] customize the UI/CSS for unique look
 
