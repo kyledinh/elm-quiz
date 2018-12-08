@@ -4327,8 +4327,8 @@ var elm$core$Basics$negate = function (n) {
 	return -n;
 };
 var author$project$Main$newEntry = F4(
-	function (desc, answers, correct, uid) {
-		return {answers: answers, completed: false, correct: correct, description: desc, editing: false, id: uid, selected: -1};
+	function (desc, answers, correct, id) {
+		return {answers: answers, completed: false, correct: correct, description: desc, editing: false, id: id, selected: -1};
 	});
 var elm$core$Basics$EQ = {$: 'EQ'};
 var elm$core$Basics$LT = {$: 'LT'};
@@ -4414,10 +4414,10 @@ var author$project$Main$emptyModel = {
 	current: 0,
 	entries: _List_fromArray(
 		[
-			A4(author$project$Main$newEntry, 'No Exam Loaded', _List_Nil, 0, 'default-uid-0')
+			A4(author$project$Main$newEntry, 'No Exam Loaded', _List_Nil, 0, 'default-id-0')
 		]),
 	field: '',
-	uid: 'default-',
+	id: 'default',
 	visibility: 'All'
 };
 var elm$core$Maybe$withDefault = F2(
@@ -4898,8 +4898,8 @@ var author$project$Main$setStorage = _Platform_outgoingPort(
 					'field',
 					elm$json$Json$Encode$string($.field)),
 					_Utils_Tuple2(
-					'uid',
-					elm$json$Json$Encode$string($.uid)),
+					'id',
+					elm$json$Json$Encode$string($.id)),
 					_Utils_Tuple2(
 					'visibility',
 					elm$json$Json$Encode$string($.visibility))
@@ -4993,24 +4993,24 @@ var author$project$Main$update = F2(
 									_List_fromArray(
 										['Blue', 'Red', 'Green', 'Orange']),
 									0,
-									'default-uid-0'),
+									'default-id-0'),
 									A4(
 									author$project$Main$newEntry,
 									'Where are you from?',
 									_List_fromArray(
 										['Dunn', 'Eden', 'Fern']),
 									1,
-									'default-uid-1'),
+									'default-id-1'),
 									A4(
 									author$project$Main$newEntry,
 									'When is the party?',
 									_List_fromArray(
 										['Gordon', 'Hell', 'Indigo']),
 									2,
-									'default-uid-2')
+									'default-id-2')
 								]),
 							field: '',
-							uid: 'default-uid-'
+							id: 'default-id'
 						}),
 					elm$core$Platform$Cmd$none);
 			case 'NextEntry':
@@ -5027,9 +5027,9 @@ var author$project$Main$update = F2(
 					elm$core$Platform$Cmd$none);
 			case 'SelectAnswer':
 				var selectedId = msg.a;
-				var uid = msg.b;
+				var id = msg.b;
 				var updateEntry = function (e) {
-					return _Utils_eq(e.id, uid) ? _Utils_update(
+					return _Utils_eq(e.id, id) ? _Utils_update(
 						e,
 						{selected: selectedId}) : e;
 				};
@@ -5313,11 +5313,9 @@ var elm$html$Html$Attributes$classList = function (classes) {
 };
 var elm$html$Html$Attributes$type_ = elm$html$Html$Attributes$stringProperty('type');
 var author$project$Main$viewChoice = F3(
-	function (indexDesc, uid, current) {
+	function (indexDesc, id, current) {
 		var questionText = indexDesc.b;
-		var entityUid = _Utils_ap(
-			uid,
-			elm$core$String$fromInt(current));
+		var questionId = id + ('-' + elm$core$String$fromInt(current));
 		var answerIndex = indexDesc.a;
 		return A2(
 			elm$html$Html$li,
@@ -5347,7 +5345,7 @@ var author$project$Main$viewChoice = F3(
 									elm$html$Html$Attributes$class('toggle'),
 									elm$html$Html$Attributes$type_('checkbox'),
 									elm$html$Html$Events$onClick(
-									A2(author$project$Main$SelectAnswer, answerIndex, entityUid))
+									A2(author$project$Main$SelectAnswer, answerIndex, questionId))
 								]),
 							_List_Nil),
 							A2(
@@ -5374,11 +5372,11 @@ var elm$virtual_dom$VirtualDom$keyedNode = function (tag) {
 var elm$html$Html$Keyed$node = elm$virtual_dom$VirtualDom$keyedNode;
 var elm$html$Html$Keyed$ul = elm$html$Html$Keyed$node('ul');
 var author$project$Main$viewChoices = F3(
-	function (answerChoices, uid, current) {
+	function (answerChoices, id, current) {
 		var viewKeyedChoice = function (indexDesc) {
 			return _Utils_Tuple2(
 				indexDesc.b,
-				A3(author$project$Main$viewChoice, indexDesc, uid, current));
+				A3(author$project$Main$viewChoice, indexDesc, id, current));
 		};
 		return A2(
 			elm$html$Html$section,
@@ -5501,7 +5499,7 @@ var elm$html$Html$header = _VirtualDom_node('header');
 var elm$html$Html$Attributes$autofocus = elm$html$Html$Attributes$boolProperty('autofocus');
 var elm$html$Html$Attributes$placeholder = elm$html$Html$Attributes$stringProperty('placeholder');
 var author$project$Main$viewEntry = function (modal) {
-	var uid = modal.uid;
+	var id = modal.id;
 	var examArr = elm$core$Array$fromList(modal.entries);
 	var current = modal.current;
 	var entry = A2(elm$core$Array$get, current, examArr);
@@ -5553,7 +5551,7 @@ var author$project$Main$viewEntry = function (modal) {
 							]),
 						_List_Nil)
 					])),
-				A3(author$project$Main$viewChoices, choices, uid, current)
+				A3(author$project$Main$viewChoices, choices, id, current)
 			]));
 };
 var elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
@@ -5849,7 +5847,7 @@ _Platform_export({'Main':{'init':author$project$Main$main(
 					function (visibility) {
 						return A2(
 							elm$json$Json$Decode$andThen,
-							function (uid) {
+							function (id) {
 								return A2(
 									elm$json$Json$Decode$andThen,
 									function (field) {
@@ -5860,7 +5858,7 @@ _Platform_export({'Main':{'init':author$project$Main$main(
 													elm$json$Json$Decode$andThen,
 													function (current) {
 														return elm$json$Json$Decode$succeed(
-															{current: current, entries: entries, field: field, uid: uid, visibility: visibility});
+															{current: current, entries: entries, field: field, id: id, visibility: visibility});
 													},
 													A2(elm$json$Json$Decode$field, 'current', elm$json$Json$Decode$int));
 											},
@@ -5911,7 +5909,7 @@ _Platform_export({'Main':{'init':author$project$Main$main(
 									},
 									A2(elm$json$Json$Decode$field, 'field', elm$json$Json$Decode$string));
 							},
-							A2(elm$json$Json$Decode$field, 'uid', elm$json$Json$Decode$string));
+							A2(elm$json$Json$Decode$field, 'id', elm$json$Json$Decode$string));
 					},
 					A2(elm$json$Json$Decode$field, 'visibility', elm$json$Json$Decode$string)))
 			])))(0)}});}(this));

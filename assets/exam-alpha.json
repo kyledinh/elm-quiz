@@ -1,0 +1,40 @@
+{
+  "exams" : [
+    {
+      "id" : "exam-alpha",
+      "current" : 0,
+      "entries": [
+        { "description" : "What is the capitol of Spain?",
+          "uid" : "exam-alpha-0",
+          "selected" : -1,
+          "correct" : 2,
+          "answers" : [ "Toledo","Seville","Madrid","Barcelona" ]
+        },
+        { "description" : "Smallest planet?",
+          "uid" : "exam-alpha-1",
+          "selected" : -1,
+          "correct" : 3,
+          "answers" : [ "Earth","Venus","Mars","Merucry" ]
+        }
+      ]
+    },
+    {
+      "id" : "exam-beta",
+      "current" : 0,
+      "entries": [
+        { "description" : "Pick a fish?",
+          "uid" : "exam-beta-0",
+          "selected" : -1,
+          "correct" : 0,
+          "answers" : [ "Tuna","Elk","Bear","Whale" ]
+        },
+        { "description" : "4 + 7",
+          "uid" : "exam-beta-1",
+          "selected" : -1,
+          "correct" : 1,
+          "answers" : [ "10","11","47" ]
+        }
+      ]
+    }
+  ]
+}

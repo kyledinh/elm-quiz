@@ -1,18 +1,5 @@
 port module Main exposing (Entry, Model, Msg(..), emptyModel, infoFooter, init, main, newEntry, onEnter, setStorage, update, updateWithStorage, view, viewChoice, viewChoices, viewControls, viewControlsCount, viewControlsReset, viewEntry, viewQuizNavigation)
 
-{-| TodoMVC implemented in Elm, using plain HTML and CSS for rendering.
-
-This application is broken up into three key parts:
-
-1.  Model - a full definition of the application's state
-2.  Update - a way to step the application state forward
-3.  View - a way to visualize our application state with HTML
-
-This clean division of concerns is a core part of Elm. You can read more about
-this in <http://guide.elm-lang.org/architecture/index.html>
-
--}
-
 import Array
 import Browser
 import Browser.Dom as Dom
@@ -55,14 +42,13 @@ updateWithStorage msg model =
 
 
 -- MODEL
--- The full application state of our todo app.
 
 
 type alias Model =
     { entries : List Entry
     , current : Int
     , field : String
-    , uid : String
+    , id : String
     , visibility : String
     }
 
@@ -81,24 +67,24 @@ type alias Entry =
 emptyModel : Model
 emptyModel =
     { entries =
-        [ newEntry "No Exam Loaded" [] 0 "default-uid-0"
+        [ newEntry "No Exam Loaded" [] 0 "default-id-0"
         ]
     , current = 0
     , visibility = "All"
     , field = ""
-    , uid = "default-"
+    , id = "default"
     }
 
 
 newEntry : String -> List String -> Int -> String -> Entry
-newEntry desc answers correct uid =
+newEntry desc answers correct id =
     { description = desc
     , answers = answers
     , selected = -1
     , correct = correct
     , completed = False
     , editing = False
-    , id = uid
+    , id = id
     }
 
 
@@ -139,13 +125,13 @@ update msg model =
 
         Reset ->
             ( { model
-                | uid = "default-uid-"
+                | id = "default-id"
                 , current = 0
                 , field = ""
                 , entries =
-                    [ newEntry "What is your favorite color?" [ "Blue", "Red", "Green", "Orange" ] 0 "default-uid-0"
-                    , newEntry "Where are you from?" [ "Dunn", "Eden", "Fern" ] 1 "default-uid-1"
-                    , newEntry "When is the party?" [ "Gordon", "Hell", "Indigo" ] 2 "default-uid-2"
+                    [ newEntry "What is your favorite color?" [ "Blue", "Red", "Green", "Orange" ] 0 "default-id-0"
+                    , newEntry "Where are you from?" [ "Dunn", "Eden", "Fern" ] 1 "default-id-1"
+                    , newEntry "When is the party?" [ "Gordon", "Hell", "Indigo" ] 2 "default-id-2"
                     ]
               }
             , Cmd.none
@@ -165,10 +151,10 @@ update msg model =
             , Cmd.none
             )
 
-        SelectAnswer selectedId uid ->
+        SelectAnswer selectedId id ->
             let
                 updateEntry e =
-                    if e.id == uid then
+                    if e.id == id then
                         { e | selected = selectedId }
 
                     else
@@ -222,8 +208,8 @@ viewEntry modal =
         current =
             modal.current
 
-        uid =
-            modal.uid
+        id =
+            modal.id
 
         examArr =
             Array.fromList modal.entries
@@ -262,7 +248,7 @@ viewEntry modal =
                 ]
                 []
             ]
-        , viewChoices choices uid current
+        , viewChoices choices id current
         ]
 
 
@@ -280,11 +266,11 @@ onEnter msg =
 
 
 viewChoices : List String -> String -> Int -> Html Msg
-viewChoices answerChoices uid current =
+viewChoices answerChoices id current =
     let
         viewKeyedChoice : ( Int, String ) -> ( String, Html Msg )
         viewKeyedChoice indexDesc =
-            ( Tuple.second indexDesc, viewChoice indexDesc uid current )
+            ( Tuple.second indexDesc, viewChoice indexDesc id current )
     in
     section
         [ class "main" ]
@@ -303,7 +289,7 @@ viewChoices answerChoices uid current =
 
 
 viewChoice : ( Int, String ) -> String -> Int -> Html Msg
-viewChoice indexDesc uid current =
+viewChoice indexDesc id current =
     let
         answerIndex =
             Tuple.first indexDesc
@@ -311,8 +297,9 @@ viewChoice indexDesc uid current =
         questionText =
             Tuple.second indexDesc
 
-        entityUid =
-            uid ++ String.fromInt current
+        -- "id" FORMAT for exam "exam-alpha", for each question "exam-alpha-0"
+        questionId =
+            id ++ "-" ++ String.fromInt current
     in
     li
         [ classList [ ( "completed", False ), ( "editing", False ) ] ]
@@ -321,7 +308,7 @@ viewChoice indexDesc uid current =
             [ input
                 [ class "toggle"
                 , type_ "checkbox"
-                , onClick (SelectAnswer answerIndex entityUid)
+                , onClick (SelectAnswer answerIndex questionId)
                 ]
                 []
             , label
