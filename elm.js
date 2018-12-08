@@ -4414,13 +4414,7 @@ var author$project$Main$emptyModel = {
 	current: 0,
 	entries: _List_fromArray(
 		[
-			A4(
-			author$project$Main$newEntry,
-			'Empty model',
-			_List_fromArray(
-				['No choice']),
-			0,
-			'default-uid-0')
+			A4(author$project$Main$newEntry, 'No Exam Loaded', _List_Nil, 0, 'default-uid-0')
 		]),
 	field: '',
 	uid: 'default-',
@@ -5272,7 +5266,8 @@ var elm$html$Html$Attributes$hidden = elm$html$Html$Attributes$boolProperty('hid
 var elm$virtual_dom$VirtualDom$lazy = _VirtualDom_lazy;
 var elm$html$Html$Lazy$lazy = elm$virtual_dom$VirtualDom$lazy;
 var author$project$Main$viewControls = F2(
-	function (visibility, entries) {
+	function (entries, current) {
+		var entriesLeft = elm$core$List$length(entries) - current;
 		var entriesCompleted = elm$core$List$length(
 			A2(
 				elm$core$List$filter,
@@ -5280,7 +5275,6 @@ var author$project$Main$viewControls = F2(
 					return $.completed;
 				},
 				entries));
-		var entriesLeft = elm$core$List$length(entries) - entriesCompleted;
 		return A2(
 			elm$html$Html$footer,
 			_List_fromArray(
@@ -5296,13 +5290,17 @@ var author$project$Main$viewControls = F2(
 					author$project$Main$viewControlsReset
 				]));
 	});
-var elm$html$Html$div = _VirtualDom_node('div');
-var elm$html$Html$input = _VirtualDom_node('input');
-var elm$html$Html$label = _VirtualDom_node('label');
+var author$project$Main$SelectAnswer = F2(
+	function (a, b) {
+		return {$: 'SelectAnswer', a: a, b: b};
+	});
 var elm$core$Tuple$second = function (_n0) {
 	var y = _n0.b;
 	return y;
 };
+var elm$html$Html$div = _VirtualDom_node('div');
+var elm$html$Html$input = _VirtualDom_node('input');
+var elm$html$Html$label = _VirtualDom_node('label');
 var elm$html$Html$Attributes$classList = function (classes) {
 	return elm$html$Html$Attributes$class(
 		A2(
@@ -5314,60 +5312,65 @@ var elm$html$Html$Attributes$classList = function (classes) {
 				A2(elm$core$List$filter, elm$core$Tuple$second, classes))));
 };
 var elm$html$Html$Attributes$type_ = elm$html$Html$Attributes$stringProperty('type');
-var author$project$Main$viewChoice = function (choice) {
-	return A2(
-		elm$html$Html$li,
-		_List_fromArray(
-			[
-				elm$html$Html$Attributes$classList(
-				_List_fromArray(
-					[
-						_Utils_Tuple2('completed', false),
-						_Utils_Tuple2('editing', false)
-					]))
-			]),
-		_List_fromArray(
-			[
-				A2(
-				elm$html$Html$div,
-				_List_fromArray(
-					[
-						elm$html$Html$Attributes$class('view')
-					]),
-				_List_fromArray(
-					[
-						A2(
-						elm$html$Html$input,
-						_List_fromArray(
-							[
-								elm$html$Html$Attributes$class('toggle'),
-								elm$html$Html$Attributes$type_('checkbox'),
-								elm$html$Html$Events$onClick(author$project$Main$NextEntry)
-							]),
-						_List_Nil),
-						A2(
-						elm$html$Html$label,
-						_List_Nil,
-						_List_fromArray(
-							[
-								elm$html$Html$text(choice)
-							])),
-						A2(
-						elm$html$Html$button,
-						_List_fromArray(
-							[
-								elm$html$Html$Attributes$class('destroy'),
-								elm$html$Html$Events$onClick(author$project$Main$NextEntry)
-							]),
-						_List_Nil)
-					]))
-			]));
-};
-var author$project$Main$viewKeyedChoice = function (choice) {
+var author$project$Main$viewChoice = F3(
+	function (indexDesc, uid, current) {
+		var questionText = indexDesc.b;
+		var entityUid = _Utils_ap(
+			uid,
+			elm$core$String$fromInt(current));
+		var answerIndex = indexDesc.a;
+		return A2(
+			elm$html$Html$li,
+			_List_fromArray(
+				[
+					elm$html$Html$Attributes$classList(
+					_List_fromArray(
+						[
+							_Utils_Tuple2('completed', false),
+							_Utils_Tuple2('editing', false)
+						]))
+				]),
+			_List_fromArray(
+				[
+					A2(
+					elm$html$Html$div,
+					_List_fromArray(
+						[
+							elm$html$Html$Attributes$class('view')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							elm$html$Html$input,
+							_List_fromArray(
+								[
+									elm$html$Html$Attributes$class('toggle'),
+									elm$html$Html$Attributes$type_('checkbox'),
+									elm$html$Html$Events$onClick(
+									A2(author$project$Main$SelectAnswer, answerIndex, entityUid))
+								]),
+							_List_Nil),
+							A2(
+							elm$html$Html$label,
+							_List_Nil,
+							_List_fromArray(
+								[
+									elm$html$Html$text(questionText)
+								]))
+						]))
+				]));
+	});
+var author$project$Main$viewKeyedChoice = function (indexDesc) {
+	var uid = 'default-';
+	var current = 0;
 	return _Utils_Tuple2(
-		choice,
-		A2(elm$html$Html$Lazy$lazy, author$project$Main$viewChoice, choice));
+		indexDesc.b,
+		A3(author$project$Main$viewChoice, indexDesc, uid, current));
 };
+var elm$core$Tuple$pair = F2(
+	function (a, b) {
+		return _Utils_Tuple2(a, b);
+	});
 var elm$html$Html$section = _VirtualDom_node('section');
 var elm$html$Html$Attributes$for = elm$html$Html$Attributes$stringProperty('htmlFor');
 var elm$html$Html$Attributes$name = elm$html$Html$Attributes$stringProperty('name');
@@ -5377,43 +5380,47 @@ var elm$virtual_dom$VirtualDom$keyedNode = function (tag) {
 };
 var elm$html$Html$Keyed$node = elm$virtual_dom$VirtualDom$keyedNode;
 var elm$html$Html$Keyed$ul = elm$html$Html$Keyed$node('ul');
-var author$project$Main$viewChoices = function (choices) {
-	return A2(
-		elm$html$Html$section,
-		_List_fromArray(
-			[
-				elm$html$Html$Attributes$class('main')
-			]),
-		_List_fromArray(
-			[
-				A2(
-				elm$html$Html$input,
-				_List_fromArray(
-					[
-						elm$html$Html$Attributes$class('toggle-all'),
-						elm$html$Html$Attributes$type_('checkbox'),
-						elm$html$Html$Attributes$name('toggle')
-					]),
-				_List_Nil),
-				A2(
-				elm$html$Html$label,
-				_List_fromArray(
-					[
-						elm$html$Html$Attributes$for('toggle-all')
-					]),
-				_List_fromArray(
-					[
-						elm$html$Html$text('Mark all as complete')
-					])),
-				A2(
-				elm$html$Html$Keyed$ul,
-				_List_fromArray(
-					[
-						elm$html$Html$Attributes$class('todo-list')
-					]),
-				A2(elm$core$List$map, author$project$Main$viewKeyedChoice, choices))
-			]));
-};
+var author$project$Main$viewChoices = F3(
+	function (answerChoices, uid, current) {
+		return A2(
+			elm$html$Html$section,
+			_List_fromArray(
+				[
+					elm$html$Html$Attributes$class('main')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					elm$html$Html$input,
+					_List_fromArray(
+						[
+							elm$html$Html$Attributes$class('toggle-all'),
+							elm$html$Html$Attributes$type_('checkbox'),
+							elm$html$Html$Attributes$name('toggle')
+						]),
+					_List_Nil),
+					A2(
+					elm$html$Html$label,
+					_List_fromArray(
+						[
+							elm$html$Html$Attributes$for('toggle-all')
+						]),
+					_List_fromArray(
+						[
+							elm$html$Html$text('Mark all as complete')
+						])),
+					A2(
+					elm$html$Html$Keyed$ul,
+					_List_fromArray(
+						[
+							elm$html$Html$Attributes$class('todo-list')
+						]),
+					A2(
+						elm$core$List$map,
+						author$project$Main$viewKeyedChoice,
+						A2(elm$core$List$indexedMap, elm$core$Tuple$pair, answerChoices)))
+				]));
+	});
 var elm$core$Array$fromListHelp = F3(
 	function (list, nodeList, nodeListSize) {
 		fromListHelp:
@@ -5495,67 +5502,64 @@ var elm$html$Html$h1 = _VirtualDom_node('h1');
 var elm$html$Html$header = _VirtualDom_node('header');
 var elm$html$Html$Attributes$autofocus = elm$html$Html$Attributes$boolProperty('autofocus');
 var elm$html$Html$Attributes$placeholder = elm$html$Html$Attributes$stringProperty('placeholder');
-var author$project$Main$viewEntry = F2(
-	function (current, entries) {
-		var examArr = elm$core$Array$fromList(entries);
-		var entry = A2(elm$core$Array$get, current, examArr);
-		var desc = function () {
-			if (entry.$ === 'Just') {
-				var e = entry.a;
-				return e.description;
-			} else {
-				return 'Unknown';
-			}
-		}();
-		var title = _Utils_ap(
-			desc,
-			elm$core$String$fromInt(current));
-		var choices = function () {
-			if (entry.$ === 'Just') {
-				var e = entry.a;
-				return e.answers;
-			} else {
-				return _List_Nil;
-			}
-		}();
-		return A2(
-			elm$html$Html$div,
-			_List_Nil,
-			_List_fromArray(
-				[
-					A2(
-					elm$html$Html$header,
-					_List_fromArray(
-						[
-							elm$html$Html$Attributes$class('header')
-						]),
-					_List_fromArray(
-						[
-							A2(
-							elm$html$Html$h1,
-							_List_Nil,
-							_List_fromArray(
-								[
-									elm$html$Html$text('elm-quiz')
-								])),
-							A2(
-							elm$html$Html$input,
-							_List_fromArray(
-								[
-									elm$html$Html$Attributes$class('new-todo'),
-									elm$html$Html$Attributes$placeholder(title),
-									elm$html$Html$Attributes$autofocus(true),
-									elm$html$Html$Attributes$name('newTodo')
-								]),
-							_List_Nil)
-						])),
-					author$project$Main$viewChoices(choices)
-				]));
-	});
+var author$project$Main$viewEntry = function (modal) {
+	var uid = modal.uid;
+	var examArr = elm$core$Array$fromList(modal.entries);
+	var current = modal.current;
+	var entry = A2(elm$core$Array$get, current, examArr);
+	var desc = function () {
+		if (entry.$ === 'Just') {
+			var e = entry.a;
+			return e.description;
+		} else {
+			return 'Unknown';
+		}
+	}();
+	var title = '(' + (elm$core$String$fromInt(current) + (') ' + desc));
+	var choices = function () {
+		if (entry.$ === 'Just') {
+			var e = entry.a;
+			return e.answers;
+		} else {
+			return _List_Nil;
+		}
+	}();
+	return A2(
+		elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				elm$html$Html$header,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('header')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						elm$html$Html$h1,
+						_List_Nil,
+						_List_fromArray(
+							[
+								elm$html$Html$text('elm-quiz')
+							])),
+						A2(
+						elm$html$Html$input,
+						_List_fromArray(
+							[
+								elm$html$Html$Attributes$class('new-todo'),
+								elm$html$Html$Attributes$placeholder(title),
+								elm$html$Html$Attributes$autofocus(true),
+								elm$html$Html$Attributes$name('newTodo')
+							]),
+						_List_Nil)
+					])),
+				A3(author$project$Main$viewChoices, choices, uid, current)
+			]));
+};
 var elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var elm$html$Html$Attributes$style = elm$virtual_dom$VirtualDom$style;
-var elm$virtual_dom$VirtualDom$lazy2 = _VirtualDom_lazy2;
-var elm$html$Html$Lazy$lazy2 = elm$virtual_dom$VirtualDom$lazy2;
 var author$project$Main$view = function (model) {
 	return A2(
 		elm$html$Html$div,
@@ -5574,8 +5578,8 @@ var author$project$Main$view = function (model) {
 					]),
 				_List_fromArray(
 					[
-						A3(elm$html$Html$Lazy$lazy2, author$project$Main$viewEntry, model.current, model.entries),
-						A3(elm$html$Html$Lazy$lazy2, author$project$Main$viewControls, model.visibility, model.entries)
+						A2(elm$html$Html$Lazy$lazy, author$project$Main$viewEntry, model),
+						A2(author$project$Main$viewControls, model.entries, model.current)
 					])),
 				author$project$Main$infoFooter
 			]));

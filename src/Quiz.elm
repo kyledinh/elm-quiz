@@ -22,6 +22,7 @@ import Html.Keyed as Keyed
 import Html.Lazy exposing (lazy, lazy2)
 import Json.Decode as Json
 import Task
+import Tuple
 
 
 main : Program (Maybe Model) Model Msg
@@ -78,7 +79,7 @@ type alias Entry =
 emptyModel : Model
 emptyModel =
     { entries = [
-      newEntry "Empty model" ["No choice"] 0 "default-uid-0"
+      newEntry "No Exam Loaded" [] 0 "default-uid-0"
       ]
     , current = 0
     , visibility = "All"
@@ -104,7 +105,6 @@ init maybeModel =
   ( Maybe.withDefault emptyModel maybeModel
   , Cmd.none
   )
-
 
 
 -- UPDATE
@@ -201,16 +201,18 @@ view model =
         ]
         [ section
             [ class "todoapp" ]
-            [ lazy2 viewEntry model.current model.entries
-            , lazy2 viewControls model.visibility model.entries
+            [ lazy viewEntry model
+            , viewControls model.entries model.current
             ]
         , infoFooter
         ]
 
-viewEntry : Int -> List Entry -> Html Msg
-viewEntry current entries =
+viewEntry : Model -> Html Msg
+viewEntry modal =
     let
-        examArr = Array.fromList entries
+        current = modal.current
+        uid = modal.uid
+        examArr = Array.fromList modal.entries
         entry = Array.get current examArr
         desc =
             case entry of
@@ -226,7 +228,7 @@ viewEntry current entries =
                 Nothing ->
                     []
 
-        title = desc ++ (String.fromInt current)
+        title = "(" ++ (String.fromInt current) ++ ") " ++ desc
     in
         div [] [
             header
@@ -240,7 +242,7 @@ viewEntry current entries =
                     ]
                     []
                 ]
-            , viewChoices choices
+            , viewChoices choices uid current
         ]
 
 onEnter : Msg -> Attribute Msg
@@ -255,8 +257,9 @@ onEnter msg =
         on "keydown" (Json.andThen isEnter keyCode)
 
 
-viewChoices : List String -> Html Msg
-viewChoices choices =
+viewChoices : List String -> String -> Int ->  Html Msg
+viewChoices answerChoices uid current =
+
     section
         [ class "main"]
         [ input
@@ -269,35 +272,39 @@ viewChoices choices =
             [ for "toggle-all" ]
             [ text "Mark all as complete" ]
         , Keyed.ul [ class "todo-list" ] <|
-            List.map viewKeyedChoice choices
+            List.map viewKeyedChoice (List.indexedMap Tuple.pair answerChoices)
         ]
 
-viewKeyedChoice : String -> ( String, Html Msg )
-viewKeyedChoice choice =
-    ( choice, lazy viewChoice choice )
+viewKeyedChoice : (Int, String) -> ( String, Html Msg )
+viewKeyedChoice indexDesc =
+    let
+        uid = "default-"
+        current = 0
+    in
+        (Tuple.second indexDesc, viewChoice indexDesc uid current)
 
-viewChoice : String -> Html Msg
-viewChoice choice =
-    li
-        [ classList [ ( "completed", False ), ( "editing", False ) ] ]
-        [ div
-            [ class "view" ]
-            [ input
-                [ class "toggle"
-                , type_ "checkbox"
-                , onClick NextEntry
+viewChoice : (Int, String) -> String -> Int -> Html Msg
+viewChoice indexDesc uid current =
+    let
+        answerIndex = Tuple.first indexDesc
+        questionText = Tuple.second indexDesc
+        entityUid = uid ++ String.fromInt current
+    in
+        li
+            [ classList [ ( "completed", False ), ( "editing", False ) ] ]
+            [ div
+                [ class "view" ]
+                [ input
+                    [ class "toggle"
+                    , type_ "checkbox"
+                    , onClick (SelectAnswer answerIndex entityUid)
+                    ]
+                    []
+                , label
+                    []
+                    [ text questionText ]
                 ]
-                []
-            , label
-                []
-                [ text choice ]
-            , button
-                [ class "destroy"
-                , onClick NextEntry
-                ]
-                []
             ]
-        ]
 
 
 -- VIEW ALL ENTRIES
@@ -306,14 +313,14 @@ viewChoice choice =
 -- VIEW CONTROLS AND FOOTER
 
 
-viewControls : String -> List Entry -> Html Msg
-viewControls visibility entries =
+viewControls : List Entry -> Int -> Html Msg
+viewControls entries current =
     let
         entriesCompleted =
             List.length (List.filter .completed entries)
 
         entriesLeft =
-            List.length entries - entriesCompleted
+            List.length entries - current
     in
         footer
             [ class "footer"
