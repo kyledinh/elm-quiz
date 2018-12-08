@@ -259,29 +259,26 @@ onEnter msg =
 
 viewChoices : List String -> String -> Int ->  Html Msg
 viewChoices answerChoices uid current =
-
-    section
-        [ class "main"]
-        [ input
-            [ class "toggle-all"
-            , type_ "checkbox"
-            , name "toggle"
-            ]
-            []
-        , label
-            [ for "toggle-all" ]
-            [ text "Mark all as complete" ]
-        , Keyed.ul [ class "todo-list" ] <|
-            List.map viewKeyedChoice (List.indexedMap Tuple.pair answerChoices)
-        ]
-
-viewKeyedChoice : (Int, String) -> ( String, Html Msg )
-viewKeyedChoice indexDesc =
     let
-        uid = "default-"
-        current = 0
+        viewKeyedChoice : (Int, String) -> ( String, Html Msg )
+        viewKeyedChoice indexDesc =
+            (Tuple.second indexDesc, viewChoice indexDesc uid current)
     in
-        (Tuple.second indexDesc, viewChoice indexDesc uid current)
+        section
+            [ class "main"]
+            [ input
+                [ class "toggle-all"
+                , type_ "checkbox"
+                , name "toggle"
+                ]
+                []
+            , label
+                [ for "toggle-all" ]
+                [ text "Mark all as complete" ]
+            , Keyed.ul [ class "todo-list" ] <|
+                List.map viewKeyedChoice (List.indexedMap Tuple.pair answerChoices)
+            ]
+
 
 viewChoice : (Int, String) -> String -> Int -> Html Msg
 viewChoice indexDesc uid current =

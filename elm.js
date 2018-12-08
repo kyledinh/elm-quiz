@@ -5360,13 +5360,6 @@ var author$project$Main$viewChoice = F3(
 						]))
 				]));
 	});
-var author$project$Main$viewKeyedChoice = function (indexDesc) {
-	var uid = 'default-';
-	var current = 0;
-	return _Utils_Tuple2(
-		indexDesc.b,
-		A3(author$project$Main$viewChoice, indexDesc, uid, current));
-};
 var elm$core$Tuple$pair = F2(
 	function (a, b) {
 		return _Utils_Tuple2(a, b);
@@ -5382,6 +5375,11 @@ var elm$html$Html$Keyed$node = elm$virtual_dom$VirtualDom$keyedNode;
 var elm$html$Html$Keyed$ul = elm$html$Html$Keyed$node('ul');
 var author$project$Main$viewChoices = F3(
 	function (answerChoices, uid, current) {
+		var viewKeyedChoice = function (indexDesc) {
+			return _Utils_Tuple2(
+				indexDesc.b,
+				A3(author$project$Main$viewChoice, indexDesc, uid, current));
+		};
 		return A2(
 			elm$html$Html$section,
 			_List_fromArray(
@@ -5417,7 +5415,7 @@ var author$project$Main$viewChoices = F3(
 						]),
 					A2(
 						elm$core$List$map,
-						author$project$Main$viewKeyedChoice,
+						viewKeyedChoice,
 						A2(elm$core$List$indexedMap, elm$core$Tuple$pair, answerChoices)))
 				]));
 	});
