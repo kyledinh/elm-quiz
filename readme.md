@@ -17,6 +17,10 @@ Features to build:
 * [ ] hints/clues/notes for each entry
 * [ ] customize the UI/CSS for unique look
 
+## Try it online at:
+
+* http://mockingbox.com/elm-quiz/ , hit `"Reset"` to load an exam
+
 <img src="assets/elm-quiz-screen.png" width="600" />
 
 ## Dev Notes

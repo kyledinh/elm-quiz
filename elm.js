@@ -5109,7 +5109,7 @@ var author$project$Main$infoFooter = A2(
 			_List_Nil,
 			_List_fromArray(
 				[
-					elm$html$Html$text('elm-quiz')
+					elm$html$Html$text('Use \'Reset\' to load DCA practice exam.')
 				])),
 			A2(
 			elm$html$Html$p,
@@ -5131,27 +5131,30 @@ var author$project$Main$infoFooter = A2(
 		]));
 var elm$html$Html$span = _VirtualDom_node('span');
 var elm$html$Html$strong = _VirtualDom_node('strong');
-var author$project$Main$viewControlsCount = function (entriesLeft) {
-	var item_ = (entriesLeft === 1) ? ' question' : ' questions';
-	return A2(
-		elm$html$Html$span,
-		_List_fromArray(
-			[
-				elm$html$Html$Attributes$class('todo-count')
-			]),
-		_List_fromArray(
-			[
-				A2(
-				elm$html$Html$strong,
-				_List_Nil,
-				_List_fromArray(
-					[
-						elm$html$Html$text(
-						elm$core$String$fromInt(entriesLeft))
-					])),
-				elm$html$Html$text(item_ + ' left')
-			]));
-};
+var author$project$Main$viewControlsCount = F3(
+	function (correctCnt, totalCnt, entriesLeft) {
+		var item_ = (entriesLeft === 1) ? ' question' : ' questions';
+		var examScore = elm$core$String$fromInt(correctCnt) + ('/' + (elm$core$String$fromInt(totalCnt) + ' with '));
+		return A2(
+			elm$html$Html$span,
+			_List_fromArray(
+				[
+					elm$html$Html$Attributes$class('todo-count')
+				]),
+			_List_fromArray(
+				[
+					elm$html$Html$text(examScore),
+					A2(
+					elm$html$Html$strong,
+					_List_Nil,
+					_List_fromArray(
+						[
+							elm$html$Html$text(
+							elm$core$String$fromInt(entriesLeft))
+						])),
+					elm$html$Html$text(item_ + ' left')
+				]));
+	});
 var author$project$Main$Reset = {$: 'Reset'};
 var elm$html$Html$button = _VirtualDom_node('button');
 var elm$virtual_dom$VirtualDom$Normal = function (a) {
@@ -5184,6 +5187,7 @@ var author$project$Main$viewControlsReset = A2(
 		]));
 var author$project$Main$NextEntry = {$: 'NextEntry'};
 var author$project$Main$PreviousEntry = {$: 'PreviousEntry'};
+var elm$html$Html$img = _VirtualDom_node('img');
 var elm$html$Html$li = _VirtualDom_node('li');
 var elm$html$Html$ul = _VirtualDom_node('ul');
 var author$project$Main$viewQuizNavigation = function (currentIndex) {
@@ -5203,7 +5207,13 @@ var author$project$Main$viewQuizNavigation = function (currentIndex) {
 					]),
 				_List_fromArray(
 					[
-						elm$html$Html$text('<<')
+						A2(
+						elm$html$Html$img,
+						_List_fromArray(
+							[
+								elm$html$Html$Attributes$class('elm-quiz-btn-prev')
+							]),
+						_List_Nil)
 					])),
 				elm$html$Html$text(' '),
 				elm$html$Html$text(
@@ -5217,7 +5227,13 @@ var author$project$Main$viewQuizNavigation = function (currentIndex) {
 					]),
 				_List_fromArray(
 					[
-						elm$html$Html$text('>>')
+						A2(
+						elm$html$Html$img,
+						_List_fromArray(
+							[
+								elm$html$Html$Attributes$class('elm-quiz-btn-next')
+							]),
+						_List_Nil)
 					]))
 			]));
 };
@@ -5249,8 +5265,14 @@ var elm$html$Html$Attributes$boolProperty = F2(
 var elm$html$Html$Attributes$hidden = elm$html$Html$Attributes$boolProperty('hidden');
 var elm$virtual_dom$VirtualDom$lazy = _VirtualDom_lazy;
 var elm$html$Html$Lazy$lazy = elm$virtual_dom$VirtualDom$lazy;
+var elm$virtual_dom$VirtualDom$lazy3 = _VirtualDom_lazy3;
+var elm$html$Html$Lazy$lazy3 = elm$virtual_dom$VirtualDom$lazy3;
 var author$project$Main$viewControls = F2(
 	function (entries, current) {
+		var totalCnt = elm$core$List$length(entries);
+		var isCorrect = function (entry) {
+			return _Utils_eq(entry.selected, entry.correct);
+		};
 		var entriesLeft = elm$core$List$length(entries) - current;
 		var entriesCompleted = elm$core$List$length(
 			A2(
@@ -5259,6 +5281,8 @@ var author$project$Main$viewControls = F2(
 					return $.completed;
 				},
 				entries));
+		var correctCnt = elm$core$List$length(
+			A2(elm$core$List$filter, isCorrect, entries));
 		return A2(
 			elm$html$Html$footer,
 			_List_fromArray(
@@ -5269,7 +5293,7 @@ var author$project$Main$viewControls = F2(
 				]),
 			_List_fromArray(
 				[
-					A2(elm$html$Html$Lazy$lazy, author$project$Main$viewControlsCount, entriesLeft),
+					A4(elm$html$Html$Lazy$lazy3, author$project$Main$viewControlsCount, correctCnt, totalCnt, entriesLeft),
 					A2(elm$html$Html$Lazy$lazy, author$project$Main$viewQuizNavigation, current),
 					author$project$Main$viewControlsReset
 				]));

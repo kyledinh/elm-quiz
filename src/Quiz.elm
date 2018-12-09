@@ -7,7 +7,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Html.Keyed as Keyed
-import Html.Lazy exposing (lazy, lazy2)
+import Html.Lazy exposing (lazy, lazy2, lazy3)
 import Json.Decode as Json
 import Model exposing (Entry, Model, dcaSample, emptyModel, newEntry)
 import Tuple
@@ -233,8 +233,17 @@ viewChoice indexDesc id current entry =
 viewControls : List Entry -> Int -> Html Msg
 viewControls entries current =
     let
+        isCorrect entry =
+            entry.selected == entry.correct
+
         entriesCompleted =
             List.length (List.filter .completed entries)
+
+        correctCnt =
+            List.length (List.filter isCorrect entries)
+
+        totalCnt =
+            List.length entries
 
         entriesLeft =
             List.length entries - current
@@ -243,15 +252,18 @@ viewControls entries current =
         [ class "footer"
         , hidden (List.isEmpty entries)
         ]
-        [ lazy viewControlsCount entriesLeft
+        [ lazy3 viewControlsCount correctCnt totalCnt entriesLeft
         , lazy viewQuizNavigation current
         , viewControlsReset
         ]
 
 
-viewControlsCount : Int -> Html Msg
-viewControlsCount entriesLeft =
+viewControlsCount : Int -> Int -> Int -> Html Msg
+viewControlsCount correctCnt totalCnt entriesLeft =
     let
+        examScore =
+            String.fromInt correctCnt ++ "/" ++ String.fromInt totalCnt ++ " with "
+
         item_ =
             if entriesLeft == 1 then
                 " question"
@@ -261,7 +273,8 @@ viewControlsCount entriesLeft =
     in
     span
         [ class "todo-count" ]
-        [ strong [] [ text (String.fromInt entriesLeft) ]
+        [ text examScore
+        , strong [] [ text (String.fromInt entriesLeft) ]
         , text (item_ ++ " left")
         ]
 
@@ -272,13 +285,13 @@ viewQuizNavigation currentIndex =
         [ class "filters" ]
         [ li
             [ onClick PreviousEntry ]
-            [ text "<<" ]
+            [ img [ class "elm-quiz-btn-prev" ] [] ]
         , text " "
         , text (" | " ++ String.fromInt currentIndex ++ " | ")
         , text " "
         , li
             [ onClick NextEntry ]
-            [ text ">>" ]
+            [ img [ class "elm-quiz-btn-next" ] [] ]
         ]
 
 
@@ -295,7 +308,7 @@ viewControlsReset =
 infoFooter : Html msg
 infoFooter =
     footer [ class "info" ]
-        [ p [] [ text "elm-quiz" ]
+        [ p [] [ text "Use 'Reset' to load DCA practice exam." ]
         , p []
             [ text "GitHub repo: "
             , a [ href "https://github.com/kyledinh/elm-quiz" ] [ text "Kyle Dinh" ]
