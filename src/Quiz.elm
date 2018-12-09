@@ -1,15 +1,15 @@
-port module Main exposing (Entry, Model, Msg(..), emptyModel, infoFooter, init, main, newEntry, onEnter, setStorage, update, updateWithStorage, view, viewChoice, viewChoices, viewControls, viewControlsCount, viewControlsReset, viewEntry, viewQuizNavigation)
+port module Main exposing (Msg(..), infoFooter, init, main, onEnter, setStorage, update, updateWithStorage, view, viewChoice, viewChoices, viewControls, viewControlsCount, viewControlsReset, viewEntry, viewQuizNavigation)
 
 import Array
 import Browser
 import Browser.Dom as Dom
+import Model exposing (Model, Entry, emptyModel, dcaSample, newEntry)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Html.Keyed as Keyed
 import Html.Lazy exposing (lazy, lazy2)
 import Json.Decode as Json
-import Task
 import Tuple
 
 
@@ -40,54 +40,6 @@ updateWithStorage msg model =
     )
 
 
-
--- MODEL
-
-
-type alias Model =
-    { entries : List Entry
-    , current : Int
-    , field : String
-    , id : String
-    , visibility : String
-    }
-
-
-type alias Entry =
-    { description : String
-    , answers : List String
-    , selected : Int
-    , correct : Int
-    , completed : Bool
-    , editing : Bool
-    , id : String
-    }
-
-
-emptyModel : Model
-emptyModel =
-    { entries =
-        [ newEntry "No Exam Loaded" [] 0 "default-id-0"
-        ]
-    , current = 0
-    , visibility = "All"
-    , field = ""
-    , id = "default"
-    }
-
-
-newEntry : String -> List String -> Int -> String -> Entry
-newEntry desc answers correct id =
-    { description = desc
-    , answers = answers
-    , selected = -1
-    , correct = correct
-    , completed = False
-    , editing = False
-    , id = id
-    }
-
-
 init : Maybe Model -> ( Model, Cmd Msg )
 init maybeModel =
     ( Maybe.withDefault emptyModel maybeModel
@@ -105,8 +57,6 @@ to them.
 -}
 type Msg
     = NoOp
-    | UpdateField String
-    | UpdateEntry String String
     | Reset
     | NextEntry
     | PreviousEntry
@@ -125,14 +75,10 @@ update msg model =
 
         Reset ->
             ( { model
-                | id = "default-id"
+                | id = "dca-sample"
                 , current = 0
                 , field = ""
-                , entries =
-                    [ newEntry "What is your favorite color?" [ "Blue", "Red", "Green", "Orange" ] 0 "default-id-0"
-                    , newEntry "Where are you from?" [ "Dunn", "Eden", "Fern" ] 1 "default-id-1"
-                    , newEntry "When is the party?" [ "Gordon", "Hell", "Indigo" ] 2 "default-id-2"
-                    ]
+                , entries = dcaSample
               }
             , Cmd.none
             )
@@ -164,23 +110,6 @@ update msg model =
             , Cmd.none
             )
 
-        UpdateField str ->
-            ( { model | field = str }
-            , Cmd.none
-            )
-
-        UpdateEntry id task ->
-            let
-                updateEntry t =
-                    if t.id == id then
-                        { t | description = task }
-
-                    else
-                        t
-            in
-            ( { model | entries = List.map updateEntry model.entries }
-            , Cmd.none
-            )
 
 
 
@@ -240,13 +169,7 @@ viewEntry modal =
         [ header
             [ class "header" ]
             [ h1 [] [ text "elm-quiz" ]
-            , input
-                [ class "new-todo"
-                , placeholder title
-                , autofocus True
-                , name "newTodo"
-                ]
-                []
+            , p [class "new-todo"] [text title]
             ]
         , viewChoices choices id current
         ]
@@ -274,16 +197,7 @@ viewChoices answerChoices id current =
     in
     section
         [ class "main" ]
-        [ input
-            [ class "toggle-all"
-            , type_ "checkbox"
-            , name "toggle"
-            ]
-            []
-        , label
-            [ for "toggle-all" ]
-            [ text "Mark all as complete" ]
-        , Keyed.ul [ class "todo-list" ] <|
+        [ Keyed.ul [ class "todo-list" ] <|
             List.map viewKeyedChoice (List.indexedMap Tuple.pair answerChoices)
         ]
 

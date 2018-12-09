@@ -4326,7 +4326,7 @@ var elm$core$Basics$False = {$: 'False'};
 var elm$core$Basics$negate = function (n) {
 	return -n;
 };
-var author$project$Main$newEntry = F4(
+var author$project$Model$newEntry = F4(
 	function (desc, answers, correct, id) {
 		return {answers: answers, completed: false, correct: correct, description: desc, editing: false, id: id, selected: -1};
 	});
@@ -4410,11 +4410,11 @@ var elm$core$Set$toList = function (_n0) {
 	var dict = _n0.a;
 	return elm$core$Dict$keys(dict);
 };
-var author$project$Main$emptyModel = {
+var author$project$Model$emptyModel = {
 	current: 0,
 	entries: _List_fromArray(
 		[
-			A4(author$project$Main$newEntry, 'No Exam Loaded', _List_Nil, 0, 'default-id-0')
+			A4(author$project$Model$newEntry, 'No Exam Loaded', _List_Nil, 0, 'default-id-0')
 		]),
 	field: '',
 	id: 'default',
@@ -4827,7 +4827,7 @@ var elm$core$Platform$Cmd$batch = _Platform_batch;
 var elm$core$Platform$Cmd$none = elm$core$Platform$Cmd$batch(_List_Nil);
 var author$project$Main$init = function (maybeModel) {
 	return _Utils_Tuple2(
-		A2(elm$core$Maybe$withDefault, author$project$Main$emptyModel, maybeModel),
+		A2(elm$core$Maybe$withDefault, author$project$Model$emptyModel, maybeModel),
 		elm$core$Platform$Cmd$none);
 };
 var elm$json$Json$Encode$bool = _Json_wrap;
@@ -4905,6 +4905,37 @@ var author$project$Main$setStorage = _Platform_outgoingPort(
 					elm$json$Json$Encode$string($.visibility))
 				]));
 	});
+var author$project$Model$dcaSample = _List_fromArray(
+	[
+		A4(
+		author$project$Model$newEntry,
+		'Which command is used to place an image into a registry?',
+		_List_fromArray(
+			['docker commit', 'docker tag', 'docker push', 'docker images', 'docker pull']),
+		2,
+		'dca-sample-0'),
+		A4(
+		author$project$Model$newEntry,
+		'Which network allows Docker Trusted Registry components running on different nodes to communicate and replicate Docker Trusted Registry data?',
+		_List_fromArray(
+			['dtr-ol', 'dtr-hosts', 'dtr-br', 'dtr-vlan']),
+		0,
+		'dca-sample-1'),
+		A4(
+		author$project$Model$newEntry,
+		'Which of the following is not an endpoint exposed by Docker Trusted Registry that can be used to assess the health of a Docker Trusted Registry replica?',
+		_List_fromArray(
+			['/health', '/nginx_status', '/api/v0/meta/cluster_status', '/replica_status']),
+		2,
+		'dca-sample-2'),
+		A4(
+		author$project$Model$newEntry,
+		'One of your developers is trying to push an image to the registry (dtr.example.com). The push fails with the error “denied: requested access to the resource is denied”. What should you verify the user has completed?',
+		_List_fromArray(
+			['docker login -u <username> -p <password> dtr.example.com', 'docker registry login -u username -p <password> dtr.example.com', 'docker push <username>/<image:tag> dtr.example.com', 'docker images login -u <username> -p <password> dtr.example.com']),
+		0,
+		'dca-sample-3')
+	]);
 var elm$core$List$foldrHelper = F4(
 	function (fn, acc, ctr, ls) {
 		if (!ls.b) {
@@ -4983,35 +5014,7 @@ var author$project$Main$update = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{
-							current: 0,
-							entries: _List_fromArray(
-								[
-									A4(
-									author$project$Main$newEntry,
-									'What is your favorite color?',
-									_List_fromArray(
-										['Blue', 'Red', 'Green', 'Orange']),
-									0,
-									'default-id-0'),
-									A4(
-									author$project$Main$newEntry,
-									'Where are you from?',
-									_List_fromArray(
-										['Dunn', 'Eden', 'Fern']),
-									1,
-									'default-id-1'),
-									A4(
-									author$project$Main$newEntry,
-									'When is the party?',
-									_List_fromArray(
-										['Gordon', 'Hell', 'Indigo']),
-									2,
-									'default-id-2')
-								]),
-							field: '',
-							id: 'default-id'
-						}),
+						{current: 0, entries: author$project$Model$dcaSample, field: '', id: 'dca-sample'}),
 					elm$core$Platform$Cmd$none);
 			case 'NextEntry':
 				return _Utils_Tuple2(
@@ -5025,35 +5028,13 @@ var author$project$Main$update = F2(
 						model,
 						{current: model.current - 1}),
 					elm$core$Platform$Cmd$none);
-			case 'SelectAnswer':
+			default:
 				var selectedId = msg.a;
 				var id = msg.b;
 				var updateEntry = function (e) {
 					return _Utils_eq(e.id, id) ? _Utils_update(
 						e,
 						{selected: selectedId}) : e;
-				};
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{
-							entries: A2(elm$core$List$map, updateEntry, model.entries)
-						}),
-					elm$core$Platform$Cmd$none);
-			case 'UpdateField':
-				var str = msg.a;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{field: str}),
-					elm$core$Platform$Cmd$none);
-			default:
-				var id = msg.a;
-				var task = msg.b;
-				var updateEntry = function (t) {
-					return _Utils_eq(t.id, id) ? _Utils_update(
-						t,
-						{description: task}) : t;
 				};
 				return _Utils_Tuple2(
 					_Utils_update(
@@ -5363,8 +5344,6 @@ var elm$core$Tuple$pair = F2(
 		return _Utils_Tuple2(a, b);
 	});
 var elm$html$Html$section = _VirtualDom_node('section');
-var elm$html$Html$Attributes$for = elm$html$Html$Attributes$stringProperty('htmlFor');
-var elm$html$Html$Attributes$name = elm$html$Html$Attributes$stringProperty('name');
 var elm$virtual_dom$VirtualDom$keyedNode = function (tag) {
 	return _VirtualDom_keyedNode(
 		_VirtualDom_noScript(tag));
@@ -5386,25 +5365,6 @@ var author$project$Main$viewChoices = F3(
 				]),
 			_List_fromArray(
 				[
-					A2(
-					elm$html$Html$input,
-					_List_fromArray(
-						[
-							elm$html$Html$Attributes$class('toggle-all'),
-							elm$html$Html$Attributes$type_('checkbox'),
-							elm$html$Html$Attributes$name('toggle')
-						]),
-					_List_Nil),
-					A2(
-					elm$html$Html$label,
-					_List_fromArray(
-						[
-							elm$html$Html$Attributes$for('toggle-all')
-						]),
-					_List_fromArray(
-						[
-							elm$html$Html$text('Mark all as complete')
-						])),
 					A2(
 					elm$html$Html$Keyed$ul,
 					_List_fromArray(
@@ -5496,8 +5456,6 @@ var elm$core$Array$get = F2(
 	});
 var elm$html$Html$h1 = _VirtualDom_node('h1');
 var elm$html$Html$header = _VirtualDom_node('header');
-var elm$html$Html$Attributes$autofocus = elm$html$Html$Attributes$boolProperty('autofocus');
-var elm$html$Html$Attributes$placeholder = elm$html$Html$Attributes$stringProperty('placeholder');
 var author$project$Main$viewEntry = function (modal) {
 	var id = modal.id;
 	var examArr = elm$core$Array$fromList(modal.entries);
@@ -5541,15 +5499,15 @@ var author$project$Main$viewEntry = function (modal) {
 								elm$html$Html$text('elm-quiz')
 							])),
 						A2(
-						elm$html$Html$input,
+						elm$html$Html$p,
 						_List_fromArray(
 							[
-								elm$html$Html$Attributes$class('new-todo'),
-								elm$html$Html$Attributes$placeholder(title),
-								elm$html$Html$Attributes$autofocus(true),
-								elm$html$Html$Attributes$name('newTodo')
+								elm$html$Html$Attributes$class('new-todo')
 							]),
-						_List_Nil)
+						_List_fromArray(
+							[
+								elm$html$Html$text(title)
+							]))
 					])),
 				A3(author$project$Main$viewChoices, choices, id, current)
 			]));
