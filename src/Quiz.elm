@@ -137,26 +137,18 @@ viewEntry model =
             Array.fromList model.entries
 
         entry =
-            Array.get model.current examArr
-
-        desc =
-            case entry of
-                Just e ->
-                    e.description
+            case Array.get model.current examArr of
+                Just ent ->
+                    ent
 
                 Nothing ->
-                    "Unknown"
-
-        choices =
-            case entry of
-                Just e ->
-                    e.answers
-
-                Nothing ->
-                    []
+                    newEntry "Unknown" [] -1 model.id
 
         title =
-            desc
+            entry.description
+
+        choices =
+            entry.answers
     in
     div []
         [ header
@@ -164,7 +156,7 @@ viewEntry model =
             [ h1 [] [ text "elm-quiz" ]
             , p [ class "new-todo" ] [ text title ]
             ]
-        , viewChoices choices model.id model.current
+        , viewChoices choices model.id model.current entry
         ]
 
 
@@ -181,12 +173,12 @@ onEnter msg =
     on "keydown" (Json.andThen isEnter keyCode)
 
 
-viewChoices : List String -> String -> Int -> Html Msg
-viewChoices answerChoices id current =
+viewChoices : List String -> String -> Int -> Entry -> Html Msg
+viewChoices answerChoices id current entry =
     let
         viewKeyedChoice : ( Int, String ) -> ( String, Html Msg )
         viewKeyedChoice indexDesc =
-            ( Tuple.second indexDesc, viewChoice indexDesc id current )
+            ( Tuple.second indexDesc, viewChoice indexDesc id current entry )
     in
     section
         [ class "main" ]
@@ -195,8 +187,8 @@ viewChoices answerChoices id current =
         ]
 
 
-viewChoice : ( Int, String ) -> String -> Int -> Html Msg
-viewChoice indexDesc id current =
+viewChoice : ( Int, String ) -> String -> Int -> Entry -> Html Msg
+viewChoice indexDesc id current entry =
     let
         answerIndex =
             Tuple.first indexDesc
@@ -207,13 +199,22 @@ viewChoice indexDesc id current =
         -- "id" FORMAT for exam "exam-alpha", for each question "exam-alpha-0"
         questionId =
             id ++ "-" ++ String.fromInt current
+
+        isCorrect =
+            entry.selected == entry.correct && entry.correct == answerIndex
+
+        isIncorrect =
+            entry.selected /= entry.correct && entry.selected == answerIndex
+
+        isChecked =
+            entry.selected == answerIndex
     in
     li
-        [ classList [ ( "completed", False ), ( "editing", False ) ] ]
+        [ classList [ ( "entry-correct", isCorrect ), ( "entry-incorrect", isIncorrect ) ] ]
         [ div
             [ class "view" ]
             [ input
-                [ class "toggle"
+                [ classList [ ( "toggle", True ), ( "toggle-checked", isChecked ) ]
                 , type_ "checkbox"
                 , onClick (SelectAnswer answerIndex questionId)
                 ]

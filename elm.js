@@ -5278,6 +5278,7 @@ var author$project$Main$SelectAnswer = F2(
 	function (a, b) {
 		return {$: 'SelectAnswer', a: a, b: b};
 	});
+var elm$core$Basics$neq = _Utils_notEqual;
 var elm$core$Tuple$second = function (_n0) {
 	var y = _n0.b;
 	return y;
@@ -5296,11 +5297,14 @@ var elm$html$Html$Attributes$classList = function (classes) {
 				A2(elm$core$List$filter, elm$core$Tuple$second, classes))));
 };
 var elm$html$Html$Attributes$type_ = elm$html$Html$Attributes$stringProperty('type');
-var author$project$Main$viewChoice = F3(
-	function (indexDesc, id, current) {
+var author$project$Main$viewChoice = F4(
+	function (indexDesc, id, current, entry) {
 		var questionText = indexDesc.b;
 		var questionId = id + ('-' + elm$core$String$fromInt(current));
 		var answerIndex = indexDesc.a;
+		var isChecked = _Utils_eq(entry.selected, answerIndex);
+		var isCorrect = _Utils_eq(entry.selected, entry.correct) && _Utils_eq(entry.correct, answerIndex);
+		var isIncorrect = (!_Utils_eq(entry.selected, entry.correct)) && _Utils_eq(entry.selected, answerIndex);
 		return A2(
 			elm$html$Html$li,
 			_List_fromArray(
@@ -5308,8 +5312,8 @@ var author$project$Main$viewChoice = F3(
 					elm$html$Html$Attributes$classList(
 					_List_fromArray(
 						[
-							_Utils_Tuple2('completed', false),
-							_Utils_Tuple2('editing', false)
+							_Utils_Tuple2('entry-correct', isCorrect),
+							_Utils_Tuple2('entry-incorrect', isIncorrect)
 						]))
 				]),
 			_List_fromArray(
@@ -5326,7 +5330,12 @@ var author$project$Main$viewChoice = F3(
 							elm$html$Html$input,
 							_List_fromArray(
 								[
-									elm$html$Html$Attributes$class('toggle'),
+									elm$html$Html$Attributes$classList(
+									_List_fromArray(
+										[
+											_Utils_Tuple2('toggle', true),
+											_Utils_Tuple2('toggle-checked', isChecked)
+										])),
 									elm$html$Html$Attributes$type_('checkbox'),
 									elm$html$Html$Events$onClick(
 									A2(author$project$Main$SelectAnswer, answerIndex, questionId))
@@ -5353,12 +5362,12 @@ var elm$virtual_dom$VirtualDom$keyedNode = function (tag) {
 };
 var elm$html$Html$Keyed$node = elm$virtual_dom$VirtualDom$keyedNode;
 var elm$html$Html$Keyed$ul = elm$html$Html$Keyed$node('ul');
-var author$project$Main$viewChoices = F3(
-	function (answerChoices, id, current) {
+var author$project$Main$viewChoices = F4(
+	function (answerChoices, id, current, entry) {
 		var viewKeyedChoice = function (indexDesc) {
 			return _Utils_Tuple2(
 				indexDesc.b,
-				A3(author$project$Main$viewChoice, indexDesc, id, current));
+				A4(author$project$Main$viewChoice, indexDesc, id, current, entry));
 		};
 		return A2(
 			elm$html$Html$section,
@@ -5461,24 +5470,17 @@ var elm$html$Html$h1 = _VirtualDom_node('h1');
 var elm$html$Html$header = _VirtualDom_node('header');
 var author$project$Main$viewEntry = function (model) {
 	var examArr = elm$core$Array$fromList(model.entries);
-	var entry = A2(elm$core$Array$get, model.current, examArr);
-	var desc = function () {
-		if (entry.$ === 'Just') {
-			var e = entry.a;
-			return e.description;
+	var entry = function () {
+		var _n0 = A2(elm$core$Array$get, model.current, examArr);
+		if (_n0.$ === 'Just') {
+			var ent = _n0.a;
+			return ent;
 		} else {
-			return 'Unknown';
+			return A4(author$project$Model$newEntry, 'Unknown', _List_Nil, -1, model.id);
 		}
 	}();
-	var title = desc;
-	var choices = function () {
-		if (entry.$ === 'Just') {
-			var e = entry.a;
-			return e.answers;
-		} else {
-			return _List_Nil;
-		}
-	}();
+	var title = entry.description;
+	var choices = entry.answers;
 	return A2(
 		elm$html$Html$div,
 		_List_Nil,
@@ -5510,7 +5512,7 @@ var author$project$Main$viewEntry = function (model) {
 								elm$html$Html$text(title)
 							]))
 					])),
-				A3(author$project$Main$viewChoices, choices, model.id, model.current)
+				A4(author$project$Main$viewChoices, choices, model.id, model.current, entry)
 			]));
 };
 var elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
