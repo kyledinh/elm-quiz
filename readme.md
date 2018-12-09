@@ -17,12 +17,17 @@ Features to build:
 * [ ] hints/clues/notes for each entry
 * [ ] customize the UI/CSS for unique look
 
+## Try it online at:
+
+* http://mockingbox.com/elm-quiz/ , hit `"Reset"` to load an exam
+
 <img src="assets/elm-quiz-screen.png" width="600" />
 
 ## Dev Notes
 
-* Use Elm 19 to build - `/build.sh` or `elm make src/Quiz.elm --output=elm.js`
-* Then open `index.html` in your browser!
-
-Docker command:
+Docker command with bind-mount to Current Working Directory:
 * `docker run -it -v ${PWD}:/usr/src/app -p 8080:8080 kyledinh/elm:latest bash`
+
+* Use Elm 19 to build - `/build.sh` or `elm make src/Quiz.elm --output=elm.js`
+* `build.sh` has `elm-format` and `elm make`
+* On host, open `index.html` in your browser!

@@ -3,13 +3,13 @@ port module Main exposing (Msg(..), infoFooter, init, main, onEnter, setStorage,
 import Array
 import Browser
 import Browser.Dom as Dom
-import Model exposing (Model, Entry, emptyModel, dcaSample, newEntry)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Html.Keyed as Keyed
-import Html.Lazy exposing (lazy, lazy2)
+import Html.Lazy exposing (lazy, lazy2, lazy3)
 import Json.Decode as Json
+import Model exposing (Entry, Model, dcaSample, emptyModel, newEntry)
 import Tuple
 
 
@@ -112,7 +112,6 @@ update msg model =
 
 
 
-
 -- VIEW
 
 
@@ -132,46 +131,32 @@ view model =
 
 
 viewEntry : Model -> Html Msg
-viewEntry modal =
+viewEntry model =
     let
-        current =
-            modal.current
-
-        id =
-            modal.id
-
         examArr =
-            Array.fromList modal.entries
+            Array.fromList model.entries
 
         entry =
-            Array.get current examArr
-
-        desc =
-            case entry of
-                Just e ->
-                    e.description
+            case Array.get model.current examArr of
+                Just ent ->
+                    ent
 
                 Nothing ->
-                    "Unknown"
-
-        choices =
-            case entry of
-                Just e ->
-                    e.answers
-
-                Nothing ->
-                    []
+                    newEntry "Unknown" [] -1 model.id
 
         title =
-            "(" ++ String.fromInt current ++ ") " ++ desc
+            entry.description
+
+        choices =
+            entry.answers
     in
     div []
         [ header
             [ class "header" ]
             [ h1 [] [ text "elm-quiz" ]
-            , p [class "new-todo"] [text title]
+            , p [ class "new-todo" ] [ text title ]
             ]
-        , viewChoices choices id current
+        , viewChoices choices model.id model.current entry
         ]
 
 
@@ -188,12 +173,12 @@ onEnter msg =
     on "keydown" (Json.andThen isEnter keyCode)
 
 
-viewChoices : List String -> String -> Int -> Html Msg
-viewChoices answerChoices id current =
+viewChoices : List String -> String -> Int -> Entry -> Html Msg
+viewChoices answerChoices id current entry =
     let
         viewKeyedChoice : ( Int, String ) -> ( String, Html Msg )
         viewKeyedChoice indexDesc =
-            ( Tuple.second indexDesc, viewChoice indexDesc id current )
+            ( Tuple.second indexDesc, viewChoice indexDesc id current entry )
     in
     section
         [ class "main" ]
@@ -202,8 +187,8 @@ viewChoices answerChoices id current =
         ]
 
 
-viewChoice : ( Int, String ) -> String -> Int -> Html Msg
-viewChoice indexDesc id current =
+viewChoice : ( Int, String ) -> String -> Int -> Entry -> Html Msg
+viewChoice indexDesc id current entry =
     let
         answerIndex =
             Tuple.first indexDesc
@@ -214,13 +199,22 @@ viewChoice indexDesc id current =
         -- "id" FORMAT for exam "exam-alpha", for each question "exam-alpha-0"
         questionId =
             id ++ "-" ++ String.fromInt current
+
+        isCorrect =
+            entry.selected == entry.correct && entry.correct == answerIndex
+
+        isIncorrect =
+            entry.selected /= entry.correct && entry.selected == answerIndex
+
+        isChecked =
+            entry.selected == answerIndex
     in
     li
-        [ classList [ ( "completed", False ), ( "editing", False ) ] ]
+        [ classList [ ( "entry-correct", isCorrect ), ( "entry-incorrect", isIncorrect ) ] ]
         [ div
             [ class "view" ]
             [ input
-                [ class "toggle"
+                [ classList [ ( "toggle", True ), ( "toggle-checked", isChecked ) ]
                 , type_ "checkbox"
                 , onClick (SelectAnswer answerIndex questionId)
                 ]
@@ -239,8 +233,17 @@ viewChoice indexDesc id current =
 viewControls : List Entry -> Int -> Html Msg
 viewControls entries current =
     let
+        isCorrect entry =
+            entry.selected == entry.correct
+
         entriesCompleted =
             List.length (List.filter .completed entries)
+
+        correctCnt =
+            List.length (List.filter isCorrect entries)
+
+        totalCnt =
+            List.length entries
 
         entriesLeft =
             List.length entries - current
@@ -249,15 +252,18 @@ viewControls entries current =
         [ class "footer"
         , hidden (List.isEmpty entries)
         ]
-        [ lazy viewControlsCount entriesLeft
-        , viewQuizNavigation
+        [ lazy3 viewControlsCount correctCnt totalCnt entriesLeft
+        , lazy viewQuizNavigation current
         , viewControlsReset
         ]
 
 
-viewControlsCount : Int -> Html Msg
-viewControlsCount entriesLeft =
+viewControlsCount : Int -> Int -> Int -> Html Msg
+viewControlsCount correctCnt totalCnt entriesLeft =
     let
+        examScore =
+            String.fromInt correctCnt ++ "/" ++ String.fromInt totalCnt ++ " with "
+
         item_ =
             if entriesLeft == 1 then
                 " question"
@@ -267,24 +273,25 @@ viewControlsCount entriesLeft =
     in
     span
         [ class "todo-count" ]
-        [ strong [] [ text (String.fromInt entriesLeft) ]
+        [ text examScore
+        , strong [] [ text (String.fromInt entriesLeft) ]
         , text (item_ ++ " left")
         ]
 
 
-viewQuizNavigation : Html Msg
-viewQuizNavigation =
+viewQuizNavigation : Int -> Html Msg
+viewQuizNavigation currentIndex =
     ul
         [ class "filters" ]
         [ li
             [ onClick PreviousEntry ]
-            [ text "<<" ]
+            [ img [ class "elm-quiz-btn-prev" ] [] ]
         , text " "
-        , text " | "
+        , text (" | " ++ String.fromInt currentIndex ++ " | ")
         , text " "
         , li
             [ onClick NextEntry ]
-            [ text ">>" ]
+            [ img [ class "elm-quiz-btn-next" ] [] ]
         ]
 
 
@@ -301,7 +308,7 @@ viewControlsReset =
 infoFooter : Html msg
 infoFooter =
     footer [ class "info" ]
-        [ p [] [ text "elm-quiz" ]
+        [ p [] [ text "Use 'Reset' to load DCA practice exam." ]
         , p []
             [ text "GitHub repo: "
             , a [ href "https://github.com/kyledinh/elm-quiz" ] [ text "Kyle Dinh" ]
