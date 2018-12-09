@@ -50,6 +50,14 @@ input[type="checkbox"] {
     display: none;
 }
 
+.entry-correct {
+  background-color: #ABEBC6 /* green */
+}
+
+.entry-incorrect {
+  background-color: #F1948A /* red */
+}
+
 .todoapp {
     background: #fff;
     margin: 130px 0 40px 0;

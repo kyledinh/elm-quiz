@@ -3,13 +3,13 @@ port module Main exposing (Msg(..), infoFooter, init, main, onEnter, setStorage,
 import Array
 import Browser
 import Browser.Dom as Dom
-import Model exposing (Model, Entry, emptyModel, dcaSample, newEntry)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Html.Keyed as Keyed
 import Html.Lazy exposing (lazy, lazy2)
 import Json.Decode as Json
+import Model exposing (Entry, Model, dcaSample, emptyModel, newEntry)
 import Tuple
 
 
@@ -112,7 +112,6 @@ update msg model =
 
 
 
-
 -- VIEW
 
 
@@ -132,19 +131,13 @@ view model =
 
 
 viewEntry : Model -> Html Msg
-viewEntry modal =
+viewEntry model =
     let
-        current =
-            modal.current
-
-        id =
-            modal.id
-
         examArr =
-            Array.fromList modal.entries
+            Array.fromList model.entries
 
         entry =
-            Array.get current examArr
+            Array.get model.current examArr
 
         desc =
             case entry of
@@ -163,15 +156,15 @@ viewEntry modal =
                     []
 
         title =
-            "(" ++ String.fromInt current ++ ") " ++ desc
+            desc
     in
     div []
         [ header
             [ class "header" ]
             [ h1 [] [ text "elm-quiz" ]
-            , p [class "new-todo"] [text title]
+            , p [ class "new-todo" ] [ text title ]
             ]
-        , viewChoices choices id current
+        , viewChoices choices model.id model.current
         ]
 
 
@@ -250,7 +243,7 @@ viewControls entries current =
         , hidden (List.isEmpty entries)
         ]
         [ lazy viewControlsCount entriesLeft
-        , viewQuizNavigation
+        , lazy viewQuizNavigation current
         , viewControlsReset
         ]
 
@@ -272,15 +265,15 @@ viewControlsCount entriesLeft =
         ]
 
 
-viewQuizNavigation : Html Msg
-viewQuizNavigation =
+viewQuizNavigation : Int -> Html Msg
+viewQuizNavigation currentIndex =
     ul
         [ class "filters" ]
         [ li
             [ onClick PreviousEntry ]
             [ text "<<" ]
         , text " "
-        , text " | "
+        , text (" | " ++ String.fromInt currentIndex ++ " | ")
         , text " "
         , li
             [ onClick NextEntry ]

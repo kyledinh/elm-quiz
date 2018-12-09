@@ -1,4 +1,5 @@
-port module Model exposing (Model, Entry, emptyModel, dcaSample, newEntry)
+port module Model exposing (Entry, Model, dcaSample, emptyModel, newEntry)
+
 
 type alias Model =
     { entries : List Entry
@@ -43,16 +44,21 @@ newEntry desc answers correct id =
     , id = id
     }
 
-dcaSampleId = "dca-sample"
+
+dcaSampleId =
+    "dca-sample"
+
+
 dcaSample =
-    [ newEntry "Which command is used to place an image into a registry?" [ "docker commit","docker tag","docker push","docker images", "docker pull" ] 2 "dca-sample-0"
-    , newEntry "Which network allows Docker Trusted Registry components running on different nodes to communicate and replicate Docker Trusted Registry data?" [ "dtr-ol","dtr-hosts","dtr-br","dtr-vlan" ] 0 "dca-sample-1"
-    , newEntry "Which of the following is not an endpoint exposed by Docker Trusted Registry that can be used to assess the health of a Docker Trusted Registry replica?" [ "/health","/nginx_status","/api/v0/meta/cluster_status","/replica_status" ] 2 "dca-sample-2"
+    [ newEntry "Which command is used to place an image into a registry?" [ "docker commit", "docker tag", "docker push", "docker images", "docker pull" ] 2 "dca-sample-0"
+    , newEntry "Which network allows Docker Trusted Registry components running on different nodes to communicate and replicate Docker Trusted Registry data?" [ "dtr-ol", "dtr-hosts", "dtr-br", "dtr-vlan" ] 0 "dca-sample-1"
+    , newEntry "Which of the following is not an endpoint exposed by Docker Trusted Registry that can be used to assess the health of a Docker Trusted Registry replica?" [ "/health", "/nginx_status", "/api/v0/meta/cluster_status", "/replica_status" ] 2 "dca-sample-2"
     , newEntry "One of your developers is trying to push an image to the registry (dtr.example.com). The push fails with the error “denied: requested access to the resource is denied”. What should you verify the user has completed?"
-          [
-            "docker login -u <username> -p <password> dtr.example.com",
-            "docker registry login -u username -p <password> dtr.example.com",
-            "docker push <username>/<image:tag> dtr.example.com",
-            "docker images login -u <username> -p <password> dtr.example.com"
-          ] 0 "dca-sample-3"
+        [ "docker login -u <username> -p <password> dtr.example.com"
+        , "docker registry login -u username -p <password> dtr.example.com"
+        , "docker push <username>/<image:tag> dtr.example.com"
+        , "docker images login -u <username> -p <password> dtr.example.com"
+        ]
+        0
+        "dca-sample-3"
     ]

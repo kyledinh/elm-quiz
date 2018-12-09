@@ -5186,38 +5186,41 @@ var author$project$Main$NextEntry = {$: 'NextEntry'};
 var author$project$Main$PreviousEntry = {$: 'PreviousEntry'};
 var elm$html$Html$li = _VirtualDom_node('li');
 var elm$html$Html$ul = _VirtualDom_node('ul');
-var author$project$Main$viewQuizNavigation = A2(
-	elm$html$Html$ul,
-	_List_fromArray(
-		[
-			elm$html$Html$Attributes$class('filters')
-		]),
-	_List_fromArray(
-		[
-			A2(
-			elm$html$Html$li,
-			_List_fromArray(
-				[
-					elm$html$Html$Events$onClick(author$project$Main$PreviousEntry)
-				]),
-			_List_fromArray(
-				[
-					elm$html$Html$text('<<')
-				])),
-			elm$html$Html$text(' '),
-			elm$html$Html$text(' | '),
-			elm$html$Html$text(' '),
-			A2(
-			elm$html$Html$li,
-			_List_fromArray(
-				[
-					elm$html$Html$Events$onClick(author$project$Main$NextEntry)
-				]),
-			_List_fromArray(
-				[
-					elm$html$Html$text('>>')
-				]))
-		]));
+var author$project$Main$viewQuizNavigation = function (currentIndex) {
+	return A2(
+		elm$html$Html$ul,
+		_List_fromArray(
+			[
+				elm$html$Html$Attributes$class('filters')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				elm$html$Html$li,
+				_List_fromArray(
+					[
+						elm$html$Html$Events$onClick(author$project$Main$PreviousEntry)
+					]),
+				_List_fromArray(
+					[
+						elm$html$Html$text('<<')
+					])),
+				elm$html$Html$text(' '),
+				elm$html$Html$text(
+				' | ' + (elm$core$String$fromInt(currentIndex) + ' | ')),
+				elm$html$Html$text(' '),
+				A2(
+				elm$html$Html$li,
+				_List_fromArray(
+					[
+						elm$html$Html$Events$onClick(author$project$Main$NextEntry)
+					]),
+				_List_fromArray(
+					[
+						elm$html$Html$text('>>')
+					]))
+			]));
+};
 var elm$core$List$filter = F2(
 	function (isGood, list) {
 		return A3(
@@ -5267,7 +5270,7 @@ var author$project$Main$viewControls = F2(
 			_List_fromArray(
 				[
 					A2(elm$html$Html$Lazy$lazy, author$project$Main$viewControlsCount, entriesLeft),
-					author$project$Main$viewQuizNavigation,
+					A2(elm$html$Html$Lazy$lazy, author$project$Main$viewQuizNavigation, current),
 					author$project$Main$viewControlsReset
 				]));
 	});
@@ -5456,11 +5459,9 @@ var elm$core$Array$get = F2(
 	});
 var elm$html$Html$h1 = _VirtualDom_node('h1');
 var elm$html$Html$header = _VirtualDom_node('header');
-var author$project$Main$viewEntry = function (modal) {
-	var id = modal.id;
-	var examArr = elm$core$Array$fromList(modal.entries);
-	var current = modal.current;
-	var entry = A2(elm$core$Array$get, current, examArr);
+var author$project$Main$viewEntry = function (model) {
+	var examArr = elm$core$Array$fromList(model.entries);
+	var entry = A2(elm$core$Array$get, model.current, examArr);
 	var desc = function () {
 		if (entry.$ === 'Just') {
 			var e = entry.a;
@@ -5469,7 +5470,7 @@ var author$project$Main$viewEntry = function (modal) {
 			return 'Unknown';
 		}
 	}();
-	var title = '(' + (elm$core$String$fromInt(current) + (') ' + desc));
+	var title = desc;
 	var choices = function () {
 		if (entry.$ === 'Just') {
 			var e = entry.a;
@@ -5509,7 +5510,7 @@ var author$project$Main$viewEntry = function (modal) {
 								elm$html$Html$text(title)
 							]))
 					])),
-				A3(author$project$Main$viewChoices, choices, id, current)
+				A3(author$project$Main$viewChoices, choices, model.id, model.current)
 			]));
 };
 var elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
