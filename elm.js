@@ -5040,6 +5040,7 @@ var author$project$Main$update = F2(
 					_Utils_update(
 						model,
 						{
+							current: model.current + 1,
 							entries: A2(elm$core$List$map, updateEntry, model.entries)
 						}),
 					elm$core$Platform$Cmd$none);
@@ -5129,12 +5130,13 @@ var author$project$Main$infoFooter = A2(
 						]))
 				]))
 		]));
+var elm$core$String$fromFloat = _String_fromNumber;
 var elm$html$Html$span = _VirtualDom_node('span');
 var elm$html$Html$strong = _VirtualDom_node('strong');
 var author$project$Main$viewControlsCount = F3(
 	function (correctCnt, totalCnt, entriesLeft) {
-		var item_ = (entriesLeft === 1) ? ' question' : ' questions';
-		var examScore = elm$core$String$fromInt(correctCnt) + ('/' + (elm$core$String$fromInt(totalCnt) + ' with '));
+		var examStatus = ((totalCnt > 0) && (!entriesLeft)) ? (' : Grade : ' + (elm$core$String$fromFloat((correctCnt / totalCnt) * 100) + '%')) : ((entriesLeft === 1) ? (elm$core$String$fromInt(entriesLeft) + ' with question left') : (elm$core$String$fromInt(entriesLeft) + ' questions left'));
+		var examScore = elm$core$String$fromInt(correctCnt) + ('/' + (elm$core$String$fromInt(totalCnt) + ' '));
 		return A2(
 			elm$html$Html$span,
 			_List_fromArray(
@@ -5149,10 +5151,8 @@ var author$project$Main$viewControlsCount = F3(
 					_List_Nil,
 					_List_fromArray(
 						[
-							elm$html$Html$text(
-							elm$core$String$fromInt(entriesLeft))
-						])),
-					elm$html$Html$text(item_ + ' left')
+							elm$html$Html$text(examStatus)
+						]))
 				]));
 	});
 var author$project$Main$Reset = {$: 'Reset'};
@@ -5237,6 +5237,7 @@ var author$project$Main$viewQuizNavigation = function (currentIndex) {
 					]))
 			]));
 };
+var elm$core$Basics$neq = _Utils_notEqual;
 var elm$core$List$filter = F2(
 	function (isGood, list) {
 		return A3(
@@ -5270,10 +5271,14 @@ var elm$html$Html$Lazy$lazy3 = elm$virtual_dom$VirtualDom$lazy3;
 var author$project$Main$viewControls = F2(
 	function (entries, current) {
 		var totalCnt = elm$core$List$length(entries);
+		var isSelected = function (entry) {
+			return !_Utils_eq(entry.selected, -1);
+		};
 		var isCorrect = function (entry) {
 			return _Utils_eq(entry.selected, entry.correct);
 		};
-		var entriesLeft = elm$core$List$length(entries) - current;
+		var entriesLeft = totalCnt - elm$core$List$length(
+			A2(elm$core$List$filter, isSelected, entries));
 		var entriesCompleted = elm$core$List$length(
 			A2(
 				elm$core$List$filter,
@@ -5302,7 +5307,6 @@ var author$project$Main$SelectAnswer = F2(
 	function (a, b) {
 		return {$: 'SelectAnswer', a: a, b: b};
 	});
-var elm$core$Basics$neq = _Utils_notEqual;
 var elm$core$Tuple$second = function (_n0) {
 	var y = _n0.b;
 	return y;

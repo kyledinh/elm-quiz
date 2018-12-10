@@ -106,7 +106,10 @@ update msg model =
                     else
                         e
             in
-            ( { model | entries = List.map updateEntry model.entries }
+            ( { model
+                | entries = List.map updateEntry model.entries
+                , current = model.current + 1
+              }
             , Cmd.none
             )
 
@@ -236,6 +239,9 @@ viewControls entries current =
         isCorrect entry =
             entry.selected == entry.correct
 
+        isSelected entry =
+            entry.selected /= -1
+
         entriesCompleted =
             List.length (List.filter .completed entries)
 
@@ -246,7 +252,7 @@ viewControls entries current =
             List.length entries
 
         entriesLeft =
-            List.length entries - current
+            totalCnt - List.length (List.filter isSelected entries)
     in
     footer
         [ class "footer"
@@ -262,20 +268,22 @@ viewControlsCount : Int -> Int -> Int -> Html Msg
 viewControlsCount correctCnt totalCnt entriesLeft =
     let
         examScore =
-            String.fromInt correctCnt ++ "/" ++ String.fromInt totalCnt ++ " with "
+            String.fromInt correctCnt ++ "/" ++ String.fromInt totalCnt ++ " "
 
-        item_ =
-            if entriesLeft == 1 then
-                " question"
+        examStatus =
+            if totalCnt > 0 && entriesLeft == 0 then
+                " : Grade : " ++ String.fromFloat ((toFloat correctCnt / toFloat totalCnt) * 100) ++ "%"
+
+            else if entriesLeft == 1 then
+                String.fromInt entriesLeft ++ " with question left"
 
             else
-                " questions"
+                String.fromInt entriesLeft ++ " questions left"
     in
     span
         [ class "todo-count" ]
         [ text examScore
-        , strong [] [ text (String.fromInt entriesLeft) ]
-        , text (item_ ++ " left")
+        , strong [] [ text examStatus ]
         ]
 
 
