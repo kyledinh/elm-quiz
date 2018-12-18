@@ -6,7 +6,6 @@ type alias Model =
     , current : Int
     , field : String
     , id : String
-    , visibility : String
     }
 
 
@@ -27,7 +26,6 @@ emptyModel =
         [ newEntry "No Exam Loaded" [] 0 "default-id-0"
         ]
     , current = 0
-    , visibility = "All"
     , field = ""
     , id = "default"
     }

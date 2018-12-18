@@ -10,6 +10,7 @@ import Html.Keyed as Keyed
 import Html.Lazy exposing (lazy, lazy2, lazy3)
 import Json.Decode as Json
 import Model exposing (Entry, Model, dcaSample, emptyModel, newEntry)
+import Process exposing (sleep)
 import Tuple
 
 
@@ -60,7 +61,7 @@ type Msg
     | Reset
     | NextEntry
     | PreviousEntry
-    | SelectAnswer Int String
+    | SelectAndNext Int String
 
 
 
@@ -84,34 +85,35 @@ update msg model =
             )
 
         NextEntry ->
-            ( { model
-                | current = model.current + 1
-              }
-            , Cmd.none
-            )
+            ( model |> modelNextEntry, Cmd.none )
 
         PreviousEntry ->
-            ( { model
-                | current = model.current - 1
-              }
+            ( { model | current = model.current - 1 }, Cmd.none )
+
+        SelectAndNext selectedId id ->
+            ( model
+                |> modelSelectAnswer selectedId id
+                |> modelNextEntry
             , Cmd.none
             )
 
-        SelectAnswer selectedId id ->
-            let
-                updateEntry e =
-                    if e.id == id then
-                        { e | selected = selectedId }
 
-                    else
-                        e
-            in
-            ( { model
-                | entries = List.map updateEntry model.entries
-                , current = model.current + 1
-              }
-            , Cmd.none
-            )
+modelNextEntry : Model -> Model
+modelNextEntry model =
+    { model | current = model.current + 1 }
+
+
+modelSelectAnswer : Int -> String -> Model -> Model
+modelSelectAnswer selectedId id model =
+    let
+        updateEntry e =
+            if e.id == id then
+                { e | selected = selectedId }
+
+            else
+                e
+    in
+    { model | entries = List.map updateEntry model.entries }
 
 
 
@@ -219,7 +221,7 @@ viewChoice indexDesc id current entry =
             [ input
                 [ classList [ ( "toggle", True ), ( "toggle-checked", isChecked ) ]
                 , type_ "checkbox"
-                , onClick (SelectAnswer answerIndex questionId)
+                , onClick (SelectAndNext answerIndex questionId)
                 ]
                 []
             , label

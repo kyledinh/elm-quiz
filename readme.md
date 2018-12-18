@@ -26,7 +26,7 @@ Features to build:
 ## Dev Notes
 
 Docker command with bind-mount to Current Working Directory:
-* `docker run -it -v ${PWD}:/usr/src/app -p 8080:8080 kyledinh/elm:latest bash`
+* `docker run -it -v ${PWD}:/usr/src/app -p 8080:8080 kyledinh/elm:19 bash`
 
 * Use Elm 19 to build - `/build.sh` or `elm make src/Quiz.elm --output=elm.js`
 * `build.sh` has `elm-format` and `elm make`
