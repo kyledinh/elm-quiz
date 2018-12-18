@@ -75,6 +75,14 @@ input[type="checkbox"] {
     url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDMyIDMyIj48cGF0aCBkPSJNMTguNjI5IDE1Ljk5N2wtNy4wODMtNy4wODFMMTMuNDYyIDdsOC45OTcgOC45OTdMMTMuNDU3IDI1bC0xLjkxNi0xLjkxNnoiLz48L3N2Zz4=');
 }
 
+.summary {
+    padding: 16px 16px 16px 20px;
+    border: none;
+    background: rgba(0, 0, 0, 0.03);
+    box-shadow: inset 0 -2px 1px rgba(0,0,0,0.03);
+    text-align: center;
+}
+
 .todoapp {
     background: #fff;
     margin: 130px 0 40px 0;

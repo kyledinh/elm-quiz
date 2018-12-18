@@ -5133,13 +5133,12 @@ var author$project$Main$infoFooter = A2(
 						]))
 				]))
 		]));
-var elm$core$String$fromFloat = _String_fromNumber;
 var elm$html$Html$span = _VirtualDom_node('span');
 var elm$html$Html$strong = _VirtualDom_node('strong');
 var author$project$Main$viewControlsCount = F3(
 	function (correctCnt, totalCnt, entriesLeft) {
-		var examStatus = ((totalCnt > 0) && (!entriesLeft)) ? (' : Grade : ' + (elm$core$String$fromFloat((correctCnt / totalCnt) * 100) + '%')) : ((entriesLeft === 1) ? (elm$core$String$fromInt(entriesLeft) + ' with question left') : (elm$core$String$fromInt(entriesLeft) + ' questions left'));
-		var examScore = elm$core$String$fromInt(correctCnt) + ('/' + (elm$core$String$fromInt(totalCnt) + ' '));
+		var examStatus = ((totalCnt > 0) && (!entriesLeft)) ? 'Completed' : ((entriesLeft === 1) ? (elm$core$String$fromInt(entriesLeft) + ' with question left') : (elm$core$String$fromInt(entriesLeft) + ' questions left'));
+		var examScore = ' ';
 		return A2(
 			elm$html$Html$span,
 			_List_fromArray(
@@ -5507,7 +5506,7 @@ var author$project$Main$viewEntry = function (model) {
 			var ent = _n0.a;
 			return ent;
 		} else {
-			return A4(author$project$Model$newEntry, 'Unknown', _List_Nil, -1, model.id);
+			return A4(author$project$Model$newEntry, '.', _List_Nil, -1, model.id);
 		}
 	}();
 	var title = entry.description;
@@ -5546,8 +5545,60 @@ var author$project$Main$viewEntry = function (model) {
 				A4(author$project$Main$viewChoices, choices, model.id, model.current, entry)
 			]));
 };
+var elm$core$String$fromFloat = _String_fromNumber;
+var elm$html$Html$h2 = _VirtualDom_node('h2');
 var elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var elm$html$Html$Attributes$style = elm$virtual_dom$VirtualDom$style;
+var author$project$Main$viewSummary = F2(
+	function (entries, current) {
+		var totalCnt = elm$core$List$length(entries);
+		var isSelected = function (entry) {
+			return !_Utils_eq(entry.selected, -1);
+		};
+		var isCorrect = function (entry) {
+			return _Utils_eq(entry.selected, entry.correct);
+		};
+		var hiddenFlag = ((totalCnt > 0) && _Utils_eq(current, totalCnt)) ? 'visible' : 'hidden';
+		var entriesLeft = totalCnt - elm$core$List$length(
+			A2(elm$core$List$filter, isSelected, entries));
+		var entriesCompleted = elm$core$List$length(
+			A2(
+				elm$core$List$filter,
+				function ($) {
+					return $.completed;
+				},
+				entries));
+		var correctCnt = elm$core$List$length(
+			A2(elm$core$List$filter, isCorrect, entries));
+		var examScore = elm$core$String$fromInt(correctCnt) + ('/' + (elm$core$String$fromInt(totalCnt) + (' : Grade : ' + (elm$core$String$fromFloat((correctCnt / totalCnt) * 100) + '%'))));
+		return A2(
+			elm$html$Html$div,
+			_List_fromArray(
+				[
+					elm$html$Html$Attributes$class('header'),
+					A2(elm$html$Html$Attributes$style, 'visibility', hiddenFlag)
+				]),
+			_List_fromArray(
+				[
+					A2(
+					elm$html$Html$section,
+					_List_fromArray(
+						[
+							elm$html$Html$Attributes$class('summary')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							elm$html$Html$h2,
+							_List_Nil,
+							_List_fromArray(
+								[
+									elm$html$Html$text('Quiz Summary')
+								])),
+							elm$html$Html$text(examScore)
+						]))
+				]));
+	});
 var author$project$Main$view = function (model) {
 	return A2(
 		elm$html$Html$div,
@@ -5567,6 +5618,7 @@ var author$project$Main$view = function (model) {
 				_List_fromArray(
 					[
 						A2(elm$html$Html$Lazy$lazy, author$project$Main$viewEntry, model),
+						A2(author$project$Main$viewSummary, model.entries, model.current),
 						A2(author$project$Main$viewControls, model.entries, model.current)
 					])),
 				author$project$Main$infoFooter

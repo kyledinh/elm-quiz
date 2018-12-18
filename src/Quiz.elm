@@ -129,6 +129,7 @@ view model =
         [ section
             [ class "todoapp" ]
             [ lazy viewEntry model
+            , viewSummary model.entries model.current
             , viewControls model.entries model.current
             ]
         , infoFooter
@@ -147,7 +148,7 @@ viewEntry model =
                     ent
 
                 Nothing ->
-                    newEntry "Unknown" [] -1 model.id
+                    newEntry "." [] -1 model.id
 
         title =
             entry.description
@@ -235,6 +236,50 @@ viewChoice indexDesc id current entry =
 -- VIEW CONTROLS AND FOOTER
 
 
+viewSummary : List Entry -> Int -> Html Msg
+viewSummary entries current =
+    let
+        isCorrect entry =
+            entry.selected == entry.correct
+
+        isSelected entry =
+            entry.selected /= -1
+
+        entriesCompleted =
+            List.length (List.filter .completed entries)
+
+        correctCnt =
+            List.length (List.filter isCorrect entries)
+
+        totalCnt =
+            List.length entries
+
+        entriesLeft =
+            totalCnt - List.length (List.filter isSelected entries)
+
+        {--hidden/show-}
+        hiddenFlag =
+            if totalCnt > 0 && current == totalCnt then
+                "visible"
+
+            else
+                "hidden"
+
+        examScore =
+            String.fromInt correctCnt ++ "/" ++ String.fromInt totalCnt ++ " : Grade : " ++ String.fromFloat ((toFloat correctCnt / toFloat totalCnt) * 100) ++ "%"
+    in
+    div
+        [ class "header"
+        , style "visibility" hiddenFlag
+        ]
+        [ section
+            [ class "summary" ]
+            [ h2 [] [ text "Quiz Summary" ]
+            , text examScore
+            ]
+        ]
+
+
 viewControls : List Entry -> Int -> Html Msg
 viewControls entries current =
     let
@@ -270,11 +315,13 @@ viewControlsCount : Int -> Int -> Int -> Html Msg
 viewControlsCount correctCnt totalCnt entriesLeft =
     let
         examScore =
-            String.fromInt correctCnt ++ "/" ++ String.fromInt totalCnt ++ " "
+            --String.fromInt correctCnt ++ "/" ++ String.fromInt totalCnt ++ " "
+            " "
 
         examStatus =
             if totalCnt > 0 && entriesLeft == 0 then
-                " : Grade : " ++ String.fromFloat ((toFloat correctCnt / toFloat totalCnt) * 100) ++ "%"
+                --"Grade : " ++ String.fromFloat ((toFloat correctCnt / toFloat totalCnt) * 100) ++ "%"
+                "Completed"
 
             else if entriesLeft == 1 then
                 String.fromInt entriesLeft ++ " with question left"
