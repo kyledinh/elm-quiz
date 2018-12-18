@@ -4906,6 +4906,11 @@ var author$project$Main$modelNextEntry = function (model) {
 		model,
 		{current: model.current + 1});
 };
+var author$project$Main$modelPreviousEntry = function (model) {
+	return _Utils_update(
+		model,
+		{current: model.current - 1});
+};
 var elm$core$List$foldrHelper = F4(
 	function (fn, acc, ctr, ls) {
 		if (!ls.b) {
@@ -5031,15 +5036,15 @@ var author$project$Main$update = F2(
 						{current: 0, entries: author$project$Model$dcaSample, field: '', id: 'dca-sample'}),
 					elm$core$Platform$Cmd$none);
 			case 'NextEntry':
-				return _Utils_Tuple2(
+				return (_Utils_cmp(
+					model.current,
+					elm$core$List$length(model.entries)) < 0) ? _Utils_Tuple2(
 					author$project$Main$modelNextEntry(model),
-					elm$core$Platform$Cmd$none);
+					elm$core$Platform$Cmd$none) : _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
 			case 'PreviousEntry':
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{current: model.current - 1}),
-					elm$core$Platform$Cmd$none);
+				return (model.current > 0) ? _Utils_Tuple2(
+					author$project$Main$modelPreviousEntry(model),
+					elm$core$Platform$Cmd$none) : _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
 			default:
 				var selectedId = msg.a;
 				var id = msg.b;

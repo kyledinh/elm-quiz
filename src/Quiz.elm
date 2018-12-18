@@ -85,10 +85,18 @@ update msg model =
             )
 
         NextEntry ->
-            ( model |> modelNextEntry, Cmd.none )
+            if model.current < List.length model.entries then
+                ( model |> modelNextEntry, Cmd.none )
+
+            else
+                ( model, Cmd.none )
 
         PreviousEntry ->
-            ( { model | current = model.current - 1 }, Cmd.none )
+            if model.current > 0 then
+                ( model |> modelPreviousEntry, Cmd.none )
+
+            else
+                ( model, Cmd.none )
 
         SelectAndNext selectedId id ->
             ( model
@@ -101,6 +109,11 @@ update msg model =
 modelNextEntry : Model -> Model
 modelNextEntry model =
     { model | current = model.current + 1 }
+
+
+modelPreviousEntry : Model -> Model
+modelPreviousEntry model =
+    { model | current = model.current - 1 }
 
 
 modelSelectAnswer : Int -> String -> Model -> Model
