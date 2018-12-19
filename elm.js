@@ -6008,7 +6008,8 @@ var author$project$Main$update = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{uid: uid}),
+						{current: 0, uid: uid}),
+
 					author$project$Main$fetchExam(url));
 			case 'NextEntry':
 				return (_Utils_cmp(

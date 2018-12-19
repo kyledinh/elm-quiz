@@ -97,7 +97,8 @@ update msg model =
                 url =
                     "http://mockingbox.com/elm-quiz/" ++ uid ++ ".json"
             in
-            ( { model | uid = uid }, fetchExam url )
+            ( { model | uid = uid, current = 0 }, fetchExam url )
+
 
         NextEntry ->
             if model.current < List.length model.entries then
