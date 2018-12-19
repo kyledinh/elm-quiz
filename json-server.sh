@@ -1,3 +1,3 @@
 #!/bin/bash
 
-json-server --watch assets/exam-alpha.json -p 5019
+json-server --watch src/alpha.json -p 5019

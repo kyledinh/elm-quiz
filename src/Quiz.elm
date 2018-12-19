@@ -8,8 +8,9 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Html.Keyed as Keyed
 import Html.Lazy exposing (lazy, lazy2, lazy3)
+import Http
 import Json.Decode as Json
-import Model exposing (Entry, Model, dcaSample, emptyModel, newEntry, nextEntry, previousEntry, selectAnswer)
+import Model exposing (Entry, Model, dcaSample, emptyModel, examDecoder, newEntry, nextEntry, previousEntry, selectAnswer)
 import Process exposing (sleep)
 import Tuple
 
@@ -41,10 +42,21 @@ updateWithStorage msg model =
     )
 
 
+getData : Http.Request (List Entry)
+getData =
+    Http.get "http://mockingbox.com/alpha.json" examDecoder
+
+
+fetchExam : Cmd Msg
+fetchExam =
+    Http.send NewHttpData getData
+
+
 init : Maybe Model -> ( Model, Cmd Msg )
 init maybeModel =
     ( Maybe.withDefault emptyModel maybeModel
-    , Cmd.none
+    , fetchExam
+      --Cmd.none
     )
 
 
@@ -59,9 +71,11 @@ to them.
 type Msg
     = NoOp
     | Reset
+    | LoadJson
     | NextEntry
     | PreviousEntry
     | SelectAndNext Int String
+    | NewHttpData (Result Http.Error (List Entry))
 
 
 
@@ -74,6 +88,14 @@ update msg model =
         NoOp ->
             ( model, Cmd.none )
 
+        NewHttpData result ->
+            case result of
+                Ok questions ->
+                    ( { model | entries = questions }, Cmd.none )
+
+                Err e ->
+                    ( { model | error = "error!!" }, Cmd.none )
+
         Reset ->
             ( { model
                 | id = "dca-sample"
@@ -82,6 +104,9 @@ update msg model =
               }
             , Cmd.none
             )
+
+        LoadJson ->
+            ( model, fetchExam )
 
         NextEntry ->
             if model.current < List.length model.entries then
@@ -137,7 +162,7 @@ viewEntry model =
                     ent
 
                 Nothing ->
-                    newEntry "|" [] -1 model.id
+                    newEntry "•" [] -1 model.id
 
         title =
             entry.description
@@ -234,9 +259,6 @@ viewSummary entries current =
         isSelected entry =
             entry.selected /= -1
 
-        entriesCompleted =
-            List.length (List.filter .completed entries)
-
         correctCnt =
             List.length (List.filter isCorrect entries)
 
@@ -282,9 +304,6 @@ viewControls entries current =
 
         isSelected entry =
             entry.selected /= -1
-
-        entriesCompleted =
-            List.length (List.filter .completed entries)
 
         correctCnt =
             List.length (List.filter isCorrect entries)
@@ -350,7 +369,7 @@ viewControlsReset : Html Msg
 viewControlsReset =
     button
         [ class "clear-completed"
-        , onClick Reset
+        , onClick LoadJson --Reset
         ]
         [ text "Reset"
         ]

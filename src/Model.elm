@@ -1,10 +1,14 @@
-port module Model exposing (Entry, Model, dcaSample, emptyModel, newEntry, nextEntry, previousEntry, selectAnswer)
+port module Model exposing (Entry, Model, dcaSample, emptyModel, examDecoder, newEntry, nextEntry, previousEntry, selectAnswer)
+
+import Http
+import Json.Decode as Decode
 
 
 type alias Model =
     { entries : List Entry
     , current : Int
     , id : String
+    , error : String
     }
 
 
@@ -13,10 +17,28 @@ type alias Entry =
     , answers : List String
     , selected : Int
     , correct : Int
-    , completed : Bool
-    , editing : Bool
     , id : String
     }
+
+
+type alias Entries =
+    List Entry
+
+
+examDecoder : Decode.Decoder (List Entry)
+examDecoder =
+    Decode.at [ "questions" ] (Decode.list entryDecoder)
+
+
+entryDecoder : Decode.Decoder Entry
+entryDecoder =
+    Decode.map5
+        Entry
+        (Decode.at [ "description" ] Decode.string)
+        (Decode.at [ "answers" ] (Decode.list Decode.string))
+        (Decode.at [ "selected" ] Decode.int)
+        (Decode.at [ "correct" ] Decode.int)
+        (Decode.at [ "id" ] Decode.string)
 
 
 nextEntry : Model -> Model
@@ -49,6 +71,7 @@ emptyModel =
         ]
     , current = 0
     , id = "default"
+    , error = ""
     }
 
 
@@ -58,8 +81,6 @@ newEntry desc answers correct id =
     , answers = answers
     , selected = -1
     , correct = correct
-    , completed = False
-    , editing = False
     , id = id
     }
 
