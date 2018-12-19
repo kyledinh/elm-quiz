@@ -1,0 +1,171 @@
+{
+  "name" :  "orc",
+  "title" : "DCA Orchestration",
+  "questions": [
+    { "description" : "Which of the following is the docker command to enable autolock on an existing swarm cluster?",
+      "answers" : [
+        "docker swarm update --autolock-swarm=true",
+        "docker swarm --autolock=true",
+        "docker swarm update --autolock=true",
+        "docker swarm autolock"
+      ],
+      "selected" : -1,
+      "correct" : 2,
+      "uid" : "orc-0"
+    },
+    { "description" : "What is the difference between a replicated and a global service?",
+      "answers" : [
+        "Number of identical tasks can be specified for a replicated service. There is no pre-specified number of tasks for global service.",
+        "Replicated service can only be deployed on manager node. Global service can be deployed on both manager and worker node.",
+        "Good candidates for replicated service are monitoring agents that you want to run on every node in the swarm. Good candidates for global service are http servers.",
+        "Replicated service runs one task on every node. Global service runs multiple task on every node."
+      ],
+      "selected" : -1,
+      "correct" : 0,
+      "uid" : "orc-1"
+    },
+    { "description" : "What is the function of docker inspect command?",
+      "answers" : [
+        "To display system-wide information",
+        "To manage Docker configs",
+        "To return low-level information on Docker objects",
+        "To inspect changes to files or directories on a container's filesystem"
+      ],
+      "selected" : -1,
+      "correct" : 2,
+      "uid" : "orc-2"
+    },
+    { "description" : "What is the default format of docker inspect output?",
+      "answers" : [
+        "json",
+        "xml",
+        "html",
+        "yaml"
+      ],
+      "selected" : -1,
+      "correct" : 0,
+      "uid" : "orc-3"
+    },
+    { "description" : "What are the two types of docker swarm services?",
+      "answers" : [
+        "replicated and local services",
+        "local and global services",
+        "replicated and global services",
+        "distributed and replicated services"
+      ],
+      "selected" : -1,
+      "correct" : 2,
+      "uid" : "orc-4"
+    },
+    { "description" : "What is the docker command to add or update a placement constraint?",
+      "answers" : [
+        "docker service update --pref-add",
+        "docker service update --placement-constraint-add",
+        "docker service update --placement-pref-add",
+        "docker service update --constraint-add"
+      ],
+      "selected" : -1,
+      "correct" : 3,
+      "uid" : "orc-5"
+    },
+    { "description" : "What is the docker command to add or update a mount on a service?",
+      "answers" : [
+        "docker service update --mount-add",
+        "docker service --mount-volume",
+        "docker service --mount-volume",
+        "docker service --add-update-mount"
+      ],
+      "selected" : -1,
+      "correct" : 0,
+      "uid" : "orc-6"
+    },
+    { "description" : "What is the docker command to add a network to a service?",
+      "answers" : [
+        "docker service modify --add-network",
+        "docker service update --network-add",
+        "docker service add-network",
+        "docker service set --add-network"
+      ],
+      "selected" : -1,
+      "correct" : 1,
+      "uid" : "orc-7"
+    },
+    { "description" : "What is the docker command to add a placement preference?",
+      "answers" : [
+        "docker service update --placement-constraint-add",
+        "docker service update --placement-pref-add",
+        "docker service update --pref-add",
+        "docker service update --constraint-add"
+      ],
+      "selected" : -1,
+      "correct" : 1,
+      "uid" : "orc-8"
+    },
+    { "description" : "What is the docker command to add or update a published port?",
+      "answers" : [
+        "docker service set --add-port",
+        "docker service update --publish-add",
+        "docker service update --publish-port",
+        "docker service modify --add-update-port"
+      ],
+      "selected" : -1,
+      "correct" : 2,
+      "uid" : "orc-9"
+    },
+    { "description" : "What is the docker command to roll back to the previous version of a service?",
+      "answers" : [
+        "docker service update --rollback-version",
+        "docker service --rollback-version",
+        "docker service --rollback",
+        "docker service update --rollback"
+      ],
+      "selected" : -1,
+      "correct" : 3,
+      "uid" : "orc-10"
+    },
+    { "description" : "What is the docker command to add or update a node label?",
+      "answers" : [
+        "docker node modify --set-label",
+        "docker node update --set-label",
+        "docker node update --label-add",
+        "docker node add --label"
+      ],
+      "selected" : -1,
+      "correct" : 2,
+      "uid" : "orc-11"
+    },
+    { "description" : "Which of the following is NOT true about Raft (docker consensus algorithm)?",
+      "answers" : [
+        "Raft requires a majority or quorum of (N/2) + 1 members",
+        "Raft tolerates up to (N-2)/2 failures",
+        "If a quorum is not reached, the existing tasks will keep running",
+        "f a quorum is not reached, the system will not process any more requests to schedule additional tasks"
+      ],
+      "selected" : -1,
+      "correct" : 1,
+      "uid" : "orc-12"
+    },
+    { "description" : "What is the docker command to update an existing service?",
+      "answers" : [
+        "docker service config",
+        "docker service update",
+        "docker service change",
+        "docker service modify"
+      ],
+      "selected" : -1,
+      "correct" : 1,
+      "uid" : "orc-13"
+    },
+    { "description" : "What is the docker command to increase number of replicas?",
+      "answers" : [
+        "docker service build",
+        "docker service increase",
+        "docker service scale",
+        "docker service replica"
+      ],
+      "selected" : -1,
+      "correct" : 2,
+      "uid" : "orc-14"
+    }
+  ]
+}

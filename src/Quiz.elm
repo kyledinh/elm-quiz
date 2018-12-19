@@ -39,17 +39,12 @@ updateWithStorage msg model =
         ( newModel, cmds ) =
             update msg model
     in
-    ( newModel
-    , Cmd.batch [ setStorage newModel, cmds ]
-    )
+    ( newModel, Cmd.batch [ setStorage newModel, cmds ] )
 
 
 init : Maybe Model -> ( Model, Cmd Msg )
 init maybeModel =
-    ( Maybe.withDefault emptyModel maybeModel
-    , --fetchExam
-      Cmd.none
-    )
+    ( Maybe.withDefault emptyModel maybeModel, Cmd.none )
 
 
 
@@ -63,7 +58,7 @@ to them.
 type Msg
     = NoOp
     | Reset
-    | LoadJson
+    | LoadJson String
     | NextEntry
     | PreviousEntry
     | SelectAndNext Int String
@@ -97,8 +92,12 @@ update msg model =
             , Cmd.none
             )
 
-        LoadJson ->
-            ( { model | uid = "alpha" }, fetchExam )
+        LoadJson uid ->
+            let
+                url =
+                    "http://mockingbox.com/elm-quiz/" ++ uid ++ ".json"
+            in
+            ( { model | uid = uid }, fetchExam url )
 
         NextEntry ->
             if model.current < List.length model.entries then
@@ -122,9 +121,9 @@ update msg model =
             )
 
 
-fetchExam : Cmd Msg
-fetchExam =
-    Http.send NewHttpData Data.getData
+fetchExam : String -> Cmd Msg
+fetchExam url =
+    Http.send NewHttpData (Data.getData url)
 
 
 onEnter : Msg -> Attribute Msg
@@ -312,9 +311,7 @@ viewControls entries current =
             totalCnt - List.length (List.filter isSelected entries)
     in
     footer
-        [ class "footer"
-        , hidden (List.isEmpty entries)
-        ]
+        [ class "footer", hidden (List.isEmpty entries) ]
         [ lazy3 viewControlsCount correctCnt totalCnt entriesLeft
         , lazy viewQuizNavigation current
         , viewControlsReset
@@ -366,12 +363,28 @@ viewControlsReset : Html Msg
 viewControlsReset =
     span [ class "clear-completed" ]
         [ button
-            [ onClick LoadJson ]
-            [ text "Load" ]
+            [ onClick (LoadJson "img") ]
+            [ text "IMG" ]
+        , span [] [ text " | " ]
+        , button
+            [ onClick (LoadJson "orc") ]
+            [ text "ORC" ]
+        , span [] [ text " | " ]
+        , button
+            [ onClick (LoadJson "net") ]
+            [ text "NET" ]
+        , span [] [ text " | " ]
+        , button
+            [ onClick (LoadJson "cfg") ]
+            [ text "CFG" ]
+        , span [] [ text " | " ]
+        , button
+            [ onClick (LoadJson "sec") ]
+            [ text "SEC" ]
         , span [] [ text " | " ]
         , button
             [ onClick Reset ]
-            [ text "Reset" ]
+            [ text "Default" ]
         ]
 
 
@@ -382,7 +395,7 @@ viewInfoFooter model =
             String.fromInt (List.length model.entries)
     in
     footer [ class "info" ]
-        [ p [] [ text "Use 'Reset' to load DCA practice exam." ]
+        [ p [] [ text "Select one of these IMG | ORC | NET | CFG | SEC | Default available exams." ]
         , p []
             [ text "GitHub repo: "
             , a [ href "https://github.com/kyledinh/elm-quiz" ] [ text "Kyle Dinh" ]
