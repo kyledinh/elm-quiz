@@ -11,8 +11,8 @@ Features to build:
 * [x] UI will display one entry at a time
 * [x] can select a choice for each entry
 * [x] can navigate through entries in exam
-* [ ] grade the exam, show number of correct/wrong
-* [ ] source the exam from JSON file
+* [x] grade the exam, show number of correct/wrong
+* [x] source the exam from JSON file
 * [x] can reset the exam
 * [ ] hints/clues/notes for each entry
 * [ ] customize the UI/CSS for unique look
@@ -26,7 +26,7 @@ Features to build:
 ## Dev Notes
 
 Docker command with bind-mount to Current Working Directory:
-* `docker run -it -v ${PWD}:/usr/src/app -p 8080:8080 kyledinh/elm:latest bash`
+* `docker run -it -v ${PWD}:/usr/src/app -p 8080:8080 kyledinh/elm:19 bash`
 
 * Use Elm 19 to build - `/build.sh` or `elm make src/Quiz.elm --output=elm.js`
 * `build.sh` has `elm-format` and `elm make`

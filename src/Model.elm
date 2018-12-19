@@ -1,12 +1,13 @@
-port module Model exposing (Entry, Model, dcaSample, emptyModel, newEntry)
+port module Model exposing (Entry, Model, dcaSample, emptyModel, newEntry, nextEntry, previousEntry, selectAnswer)
+
+import Http
 
 
 type alias Model =
     { entries : List Entry
     , current : Int
-    , field : String
-    , id : String
-    , visibility : String
+    , uid : String
+    , error : String
     }
 
 
@@ -15,10 +16,35 @@ type alias Entry =
     , answers : List String
     , selected : Int
     , correct : Int
-    , completed : Bool
-    , editing : Bool
-    , id : String
+    , uid : String
     }
+
+
+type alias Entries =
+    List Entry
+
+
+nextEntry : Model -> Model
+nextEntry model =
+    { model | current = model.current + 1 }
+
+
+previousEntry : Model -> Model
+previousEntry model =
+    { model | current = model.current - 1 }
+
+
+selectAnswer : Int -> String -> Model -> Model
+selectAnswer selectedId uid model =
+    let
+        updateEntry entry =
+            if entry.uid == uid then
+                { entry | selected = selectedId }
+
+            else
+                entry
+    in
+    { model | entries = List.map updateEntry model.entries }
 
 
 emptyModel : Model
@@ -27,21 +53,18 @@ emptyModel =
         [ newEntry "No Exam Loaded" [] 0 "default-id-0"
         ]
     , current = 0
-    , visibility = "All"
-    , field = ""
-    , id = "default"
+    , uid = "default"
+    , error = ""
     }
 
 
 newEntry : String -> List String -> Int -> String -> Entry
-newEntry desc answers correct id =
+newEntry desc answers correct uid =
     { description = desc
     , answers = answers
     , selected = -1
     , correct = correct
-    , completed = False
-    , editing = False
-    , id = id
+    , uid = uid
     }
 
 

@@ -1,0 +1,61 @@
+{
+  "name" :  "alpha",
+  "title" : "Alpha Exam 01",
+  "questions": [
+    { "description" : "Which of the following is NOT how to create an efficient image via a Dockerfile?",
+      "answers" : [
+        "Start with an appropriate base image",
+        "Avoid installing unnecessary packages",
+        "Combine multiple applications into a single container",
+        "Use multi-stage builds"
+      ],
+      "selected" : -1,
+      "correct" : 2,
+      "uid" : "alpha-0"
+    },
+    { "description" : "What Dockerfile option LABEL does?",
+      "answers" : [
+        "Provide defaults for an executing container",
+        "Label a container that will run as an executable",
+        "Adds metadata to an image",
+        "Tells Docker how to test a container to check that it is still working"
+      ],
+      "selected" : -1,
+      "correct" : 2,
+      "uid" : "alpha-1"
+    },
+    { "description" : "Which of the following Dockerfile options creates a mount point with the specified name and marks it as holding externally mounted volumes from native host or other containers?",
+      "answers" : [
+        "ONBUILD",
+        "WORKDIR",
+        "RUN",
+        "VOLUME"
+      ],
+      "selected" : -1,
+      "correct" : 3,
+      "uid" : "alpha-2"
+    },
+    { "description" : "What does docker image rm command do?",
+      "answers" : [
+        "Remove one or more images",
+        "Remove unused images",
+        "Show the history of an image",
+        "Display detailed information on one or more images"
+      ],
+      "selected" : -1,
+      "correct" : 0,
+      "uid" : "alpha-3"
+    },
+    { "description" : "Which of the following docker image commands display detailed information on one or more images?",
+      "answers" : [
+        "docker image detail",
+        "docker image ls",
+        "docker image history",
+        "docker image inspect"
+      ],
+      "selected" : -1,
+      "correct" : 3,
+      "uid" : "alpha-4"
+    }
+  ]
+}

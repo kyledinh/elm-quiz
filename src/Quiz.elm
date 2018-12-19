@@ -1,16 +1,20 @@
-port module Main exposing (Msg(..), infoFooter, init, main, onEnter, setStorage, update, updateWithStorage, view, viewChoice, viewChoices, viewControls, viewControlsCount, viewControlsReset, viewEntry, viewQuizNavigation)
+port module Main exposing (Msg(..), init, main, onEnter, setStorage, update, updateWithStorage, view, viewChoice, viewChoices, viewControls, viewControlsCount, viewControlsReset, viewEntry, viewInfoFooter, viewQuizNavigation)
 
 import Array
 import Browser
 import Browser.Dom as Dom
+import Data exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Html.Keyed as Keyed
 import Html.Lazy exposing (lazy, lazy2, lazy3)
+import Http
 import Json.Decode as Json
-import Model exposing (Entry, Model, dcaSample, emptyModel, newEntry)
+import Model exposing (Entry, Model, dcaSample, emptyModel, newEntry, nextEntry, previousEntry, selectAnswer)
+import Process exposing (sleep)
 import Tuple
+import Util exposing (..)
 
 
 main : Program (Maybe Model) Model Msg
@@ -43,7 +47,8 @@ updateWithStorage msg model =
 init : Maybe Model -> ( Model, Cmd Msg )
 init maybeModel =
     ( Maybe.withDefault emptyModel maybeModel
-    , Cmd.none
+    , --fetchExam
+      Cmd.none
     )
 
 
@@ -58,9 +63,11 @@ to them.
 type Msg
     = NoOp
     | Reset
+    | LoadJson
     | NextEntry
     | PreviousEntry
-    | SelectAnswer Int String
+    | SelectAndNext Int String
+    | NewHttpData (Result Http.Error (List Entry))
 
 
 
@@ -73,91 +80,51 @@ update msg model =
         NoOp ->
             ( model, Cmd.none )
 
+        NewHttpData result ->
+            case result of
+                Ok questions ->
+                    ( { model | entries = questions }, Cmd.none )
+
+                Err e ->
+                    ( { model | error = Util.httpErrorToStr e }, Cmd.none )
+
         Reset ->
             ( { model
-                | id = "dca-sample"
+                | uid = "dca-sample"
                 , current = 0
-                , field = ""
                 , entries = dcaSample
               }
             , Cmd.none
             )
 
+        LoadJson ->
+            ( { model | uid = "alpha" }, fetchExam )
+
         NextEntry ->
-            ( { model
-                | current = model.current + 1
-              }
-            , Cmd.none
-            )
+            if model.current < List.length model.entries then
+                ( model |> Model.nextEntry, Cmd.none )
+
+            else
+                ( model, Cmd.none )
 
         PreviousEntry ->
-            ( { model
-                | current = model.current - 1
-              }
-            , Cmd.none
-            )
+            if model.current > 0 then
+                ( model |> Model.previousEntry, Cmd.none )
 
-        SelectAnswer selectedId id ->
-            let
-                updateEntry e =
-                    if e.id == id then
-                        { e | selected = selectedId }
+            else
+                ( model, Cmd.none )
 
-                    else
-                        e
-            in
-            ( { model | entries = List.map updateEntry model.entries }
+        SelectAndNext selectedId id ->
+            ( model
+                |> Model.selectAnswer selectedId id
+                |> Model.nextEntry
             , Cmd.none
             )
 
 
-
--- VIEW
-
-
-view : Model -> Html Msg
-view model =
-    div
-        [ class "todomvc-wrapper"
-        , style "visibility" "hidden"
-        ]
-        [ section
-            [ class "todoapp" ]
-            [ lazy viewEntry model
-            , viewControls model.entries model.current
-            ]
-        , infoFooter
-        ]
-
-
-viewEntry : Model -> Html Msg
-viewEntry model =
-    let
-        examArr =
-            Array.fromList model.entries
-
-        entry =
-            case Array.get model.current examArr of
-                Just ent ->
-                    ent
-
-                Nothing ->
-                    newEntry "Unknown" [] -1 model.id
-
-        title =
-            entry.description
-
-        choices =
-            entry.answers
-    in
-    div []
-        [ header
-            [ class "header" ]
-            [ h1 [] [ text "elm-quiz" ]
-            , p [ class "new-todo" ] [ text title ]
-            ]
-        , viewChoices choices model.id model.current entry
-        ]
+fetchExam : Cmd Msg
+fetchExam =
+    Http.send NewHttpData Data.getData
 
 
 onEnter : Msg -> Attribute Msg
@@ -173,12 +140,62 @@ onEnter msg =
     on "keydown" (Json.andThen isEnter keyCode)
 
 
+
+-- VIEW
+
+
+view : Model -> Html Msg
+view model =
+    div
+        [ class "todomvc-wrapper"
+        , style "visibility" "hidden"
+        ]
+        [ section
+            [ class "todoapp" ]
+            [ lazy viewEntry model
+            , viewSummary model.entries model.current
+            , viewControls model.entries model.current
+            ]
+        , viewInfoFooter model
+        ]
+
+
+viewEntry : Model -> Html Msg
+viewEntry model =
+    let
+        examArr =
+            Array.fromList model.entries
+
+        entry =
+            case Array.get model.current examArr of
+                Just ent ->
+                    ent
+
+                Nothing ->
+                    newEntry "•" [] -1 model.uid
+
+        title =
+            entry.description
+
+        choices =
+            entry.answers
+    in
+    div []
+        [ header
+            [ class "header" ]
+            [ h1 [] [ text "elm-quiz" ]
+            , p [ class "new-todo" ] [ text title ]
+            ]
+        , viewChoices choices model.uid model.current entry
+        ]
+
+
 viewChoices : List String -> String -> Int -> Entry -> Html Msg
-viewChoices answerChoices id current entry =
+viewChoices answerChoices uid current entry =
     let
         viewKeyedChoice : ( Int, String ) -> ( String, Html Msg )
         viewKeyedChoice indexDesc =
-            ( Tuple.second indexDesc, viewChoice indexDesc id current entry )
+            ( Tuple.second indexDesc, viewChoice indexDesc uid current entry )
     in
     section
         [ class "main" ]
@@ -188,7 +205,7 @@ viewChoices answerChoices id current entry =
 
 
 viewChoice : ( Int, String ) -> String -> Int -> Entry -> Html Msg
-viewChoice indexDesc id current entry =
+viewChoice indexDesc uid current entry =
     let
         answerIndex =
             Tuple.first indexDesc
@@ -198,7 +215,7 @@ viewChoice indexDesc id current entry =
 
         -- "id" FORMAT for exam "exam-alpha", for each question "exam-alpha-0"
         questionId =
-            id ++ "-" ++ String.fromInt current
+            uid ++ "-" ++ String.fromInt current
 
         isCorrect =
             entry.selected == entry.correct && entry.correct == answerIndex
@@ -216,7 +233,7 @@ viewChoice indexDesc id current entry =
             [ input
                 [ classList [ ( "toggle", True ), ( "toggle-checked", isChecked ) ]
                 , type_ "checkbox"
-                , onClick (SelectAnswer answerIndex questionId)
+                , onClick (SelectAndNext answerIndex questionId)
                 ]
                 []
             , label
@@ -230,14 +247,14 @@ viewChoice indexDesc id current entry =
 -- VIEW CONTROLS AND FOOTER
 
 
-viewControls : List Entry -> Int -> Html Msg
-viewControls entries current =
+viewSummary : List Entry -> Int -> Html Msg
+viewSummary entries current =
     let
         isCorrect entry =
             entry.selected == entry.correct
 
-        entriesCompleted =
-            List.length (List.filter .completed entries)
+        isSelected entry =
+            entry.selected /= -1
 
         correctCnt =
             List.length (List.filter isCorrect entries)
@@ -246,7 +263,53 @@ viewControls entries current =
             List.length entries
 
         entriesLeft =
-            List.length entries - current
+            totalCnt - List.length (List.filter isSelected entries)
+
+        {--hidden/show-}
+        hiddenFlag =
+            if totalCnt > 0 && current == totalCnt then
+                "visible"
+
+            else
+                "hidden"
+
+        examScore =
+            String.fromInt correctCnt
+                ++ "/"
+                ++ String.fromInt totalCnt
+                ++ " : Grade : "
+                ++ String.fromFloat ((toFloat correctCnt / toFloat totalCnt) * 100)
+                ++ "%"
+    in
+    div
+        [ class "header"
+        , style "visibility" hiddenFlag
+        ]
+        [ section
+            [ class "summary" ]
+            [ h2 [] [ text "Quiz Summary" ]
+            , text examScore
+            ]
+        ]
+
+
+viewControls : List Entry -> Int -> Html Msg
+viewControls entries current =
+    let
+        isCorrect entry =
+            entry.selected == entry.correct
+
+        isSelected entry =
+            entry.selected /= -1
+
+        correctCnt =
+            List.length (List.filter isCorrect entries)
+
+        totalCnt =
+            List.length entries
+
+        entriesLeft =
+            totalCnt - List.length (List.filter isSelected entries)
     in
     footer
         [ class "footer"
@@ -262,20 +325,24 @@ viewControlsCount : Int -> Int -> Int -> Html Msg
 viewControlsCount correctCnt totalCnt entriesLeft =
     let
         examScore =
-            String.fromInt correctCnt ++ "/" ++ String.fromInt totalCnt ++ " with "
+            --String.fromInt correctCnt ++ "/" ++ String.fromInt totalCnt ++ " "
+            " "
 
-        item_ =
-            if entriesLeft == 1 then
-                " question"
+        examStatus =
+            if totalCnt > 0 && entriesLeft == 0 then
+                --"Grade : " ++ String.fromFloat ((toFloat correctCnt / toFloat totalCnt) * 100) ++ "%"
+                "Completed"
+
+            else if entriesLeft == 1 then
+                String.fromInt entriesLeft ++ " with question left"
 
             else
-                " questions"
+                String.fromInt entriesLeft ++ " questions left"
     in
     span
         [ class "todo-count" ]
         [ text examScore
-        , strong [] [ text (String.fromInt entriesLeft) ]
-        , text (item_ ++ " left")
+        , strong [] [ text examStatus ]
         ]
 
 
@@ -297,20 +364,31 @@ viewQuizNavigation currentIndex =
 
 viewControlsReset : Html Msg
 viewControlsReset =
-    button
-        [ class "clear-completed"
-        , onClick Reset
-        ]
-        [ text "Reset"
+    span [ class "clear-completed" ]
+        [ button
+            [ onClick LoadJson ]
+            [ text "Load" ]
+        , span [] [ text " | " ]
+        , button
+            [ onClick Reset ]
+            [ text "Reset" ]
         ]
 
 
-infoFooter : Html msg
-infoFooter =
+viewInfoFooter : Model -> Html msg
+viewInfoFooter model =
+    let
+        summary =
+            String.fromInt (List.length model.entries)
+    in
     footer [ class "info" ]
         [ p [] [ text "Use 'Reset' to load DCA practice exam." ]
         , p []
             [ text "GitHub repo: "
             , a [ href "https://github.com/kyledinh/elm-quiz" ] [ text "Kyle Dinh" ]
+            ]
+        , div []
+            [ div [] [ text ("Result: " ++ summary) ]
+            , div [] [ text ("Error: " ++ model.error) ]
             ]
         ]
