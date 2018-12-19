@@ -1,5 +1,5 @@
 {
-  "id" : "alpha",
+  "name" :  "alpha",
   "title" : "Alpha Exam 01",
   "questions": [
     { "description" : "Which of the following is NOT how to create an efficient image via a Dockerfile?",
@@ -11,7 +11,7 @@
       ],
       "selected" : -1,
       "correct" : 2,
-      "id" : "alpha-0"
+      "uid" : "alpha-0"
     },
     { "description" : "What Dockerfile option LABEL does?",
       "answers" : [
@@ -22,7 +22,7 @@
       ],
       "selected" : -1,
       "correct" : 2,
-      "id" : "alpha-1"
+      "uid" : "alpha-1"
     },
     { "description" : "Which of the following Dockerfile options creates a mount point with the specified name and marks it as holding externally mounted volumes from native host or other containers?",
       "answers" : [
@@ -33,7 +33,7 @@
       ],
       "selected" : -1,
       "correct" : 3,
-      "id" : "alpha-2"
+      "uid" : "alpha-2"
     },
     { "description" : "What does docker image rm command do?",
       "answers" : [
@@ -44,7 +44,7 @@
       ],
       "selected" : -1,
       "correct" : 0,
-      "id" : "alpha-3"
+      "uid" : "alpha-3"
     },
     { "description" : "Which of the following docker image commands display detailed information on one or more images?",
       "answers" : [
@@ -55,7 +55,7 @@
       ],
       "selected" : -1,
       "correct" : 3,
-      "id" : "alpha-4"
+      "uid" : "alpha-4"
     }
   ]
 }

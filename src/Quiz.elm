@@ -1,8 +1,9 @@
-port module Main exposing (Msg(..), infoFooter, init, main, onEnter, setStorage, update, updateWithStorage, view, viewChoice, viewChoices, viewControls, viewControlsCount, viewControlsReset, viewEntry, viewQuizNavigation)
+port module Main exposing (Msg(..), init, main, onEnter, setStorage, update, updateWithStorage, view, viewChoice, viewChoices, viewControls, viewControlsCount, viewControlsReset, viewEntry, viewInfoFooter, viewQuizNavigation)
 
 import Array
 import Browser
 import Browser.Dom as Dom
+import Data exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
@@ -10,9 +11,10 @@ import Html.Keyed as Keyed
 import Html.Lazy exposing (lazy, lazy2, lazy3)
 import Http
 import Json.Decode as Json
-import Model exposing (Entry, Model, dcaSample, emptyModel, examDecoder, newEntry, nextEntry, previousEntry, selectAnswer)
+import Model exposing (Entry, Model, dcaSample, emptyModel, newEntry, nextEntry, previousEntry, selectAnswer)
 import Process exposing (sleep)
 import Tuple
+import Util exposing (..)
 
 
 main : Program (Maybe Model) Model Msg
@@ -42,21 +44,11 @@ updateWithStorage msg model =
     )
 
 
-getData : Http.Request (List Entry)
-getData =
-    Http.get "http://mockingbox.com/alpha.json" examDecoder
-
-
-fetchExam : Cmd Msg
-fetchExam =
-    Http.send NewHttpData getData
-
-
 init : Maybe Model -> ( Model, Cmd Msg )
 init maybeModel =
     ( Maybe.withDefault emptyModel maybeModel
-    , fetchExam
-      --Cmd.none
+    , --fetchExam
+      Cmd.none
     )
 
 
@@ -94,11 +86,11 @@ update msg model =
                     ( { model | entries = questions }, Cmd.none )
 
                 Err e ->
-                    ( { model | error = "error!!" }, Cmd.none )
+                    ( { model | error = Util.httpErrorToStr e }, Cmd.none )
 
         Reset ->
             ( { model
-                | id = "dca-sample"
+                | uid = "dca-sample"
                 , current = 0
                 , entries = dcaSample
               }
@@ -106,7 +98,7 @@ update msg model =
             )
 
         LoadJson ->
-            ( model, fetchExam )
+            ( { model | uid = "alpha" }, fetchExam )
 
         NextEntry ->
             if model.current < List.length model.entries then
@@ -130,6 +122,24 @@ update msg model =
             )
 
 
+fetchExam : Cmd Msg
+fetchExam =
+    Http.send NewHttpData Data.getData
+
+
+onEnter : Msg -> Attribute Msg
+onEnter msg =
+    let
+        isEnter code =
+            if code == 13 then
+                Json.succeed msg
+
+            else
+                Json.fail "not ENTER"
+    in
+    on "keydown" (Json.andThen isEnter keyCode)
+
+
 
 -- VIEW
 
@@ -146,7 +156,7 @@ view model =
             , viewSummary model.entries model.current
             , viewControls model.entries model.current
             ]
-        , infoFooter
+        , viewInfoFooter model
         ]
 
 
@@ -162,7 +172,7 @@ viewEntry model =
                     ent
 
                 Nothing ->
-                    newEntry "•" [] -1 model.id
+                    newEntry "•" [] -1 model.uid
 
         title =
             entry.description
@@ -176,29 +186,16 @@ viewEntry model =
             [ h1 [] [ text "elm-quiz" ]
             , p [ class "new-todo" ] [ text title ]
             ]
-        , viewChoices choices model.id model.current entry
+        , viewChoices choices model.uid model.current entry
         ]
 
 
-onEnter : Msg -> Attribute Msg
-onEnter msg =
-    let
-        isEnter code =
-            if code == 13 then
-                Json.succeed msg
-
-            else
-                Json.fail "not ENTER"
-    in
-    on "keydown" (Json.andThen isEnter keyCode)
-
-
 viewChoices : List String -> String -> Int -> Entry -> Html Msg
-viewChoices answerChoices id current entry =
+viewChoices answerChoices uid current entry =
     let
         viewKeyedChoice : ( Int, String ) -> ( String, Html Msg )
         viewKeyedChoice indexDesc =
-            ( Tuple.second indexDesc, viewChoice indexDesc id current entry )
+            ( Tuple.second indexDesc, viewChoice indexDesc uid current entry )
     in
     section
         [ class "main" ]
@@ -208,7 +205,7 @@ viewChoices answerChoices id current entry =
 
 
 viewChoice : ( Int, String ) -> String -> Int -> Entry -> Html Msg
-viewChoice indexDesc id current entry =
+viewChoice indexDesc uid current entry =
     let
         answerIndex =
             Tuple.first indexDesc
@@ -218,7 +215,7 @@ viewChoice indexDesc id current entry =
 
         -- "id" FORMAT for exam "exam-alpha", for each question "exam-alpha-0"
         questionId =
-            id ++ "-" ++ String.fromInt current
+            uid ++ "-" ++ String.fromInt current
 
         isCorrect =
             entry.selected == entry.correct && entry.correct == answerIndex
@@ -367,20 +364,31 @@ viewQuizNavigation currentIndex =
 
 viewControlsReset : Html Msg
 viewControlsReset =
-    button
-        [ class "clear-completed"
-        , onClick LoadJson --Reset
-        ]
-        [ text "Reset"
+    span [ class "clear-completed" ]
+        [ button
+            [ onClick LoadJson ]
+            [ text "Load" ]
+        , span [] [ text " | " ]
+        , button
+            [ onClick Reset ]
+            [ text "Reset" ]
         ]
 
 
-infoFooter : Html msg
-infoFooter =
+viewInfoFooter : Model -> Html msg
+viewInfoFooter model =
+    let
+        summary =
+            String.fromInt (List.length model.entries)
+    in
     footer [ class "info" ]
         [ p [] [ text "Use 'Reset' to load DCA practice exam." ]
         , p []
             [ text "GitHub repo: "
             , a [ href "https://github.com/kyledinh/elm-quiz" ] [ text "Kyle Dinh" ]
+            ]
+        , div []
+            [ div [] [ text ("Result: " ++ summary) ]
+            , div [] [ text ("Error: " ++ model.error) ]
             ]
         ]

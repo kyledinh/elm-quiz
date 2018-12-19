@@ -11,8 +11,8 @@ Features to build:
 * [x] UI will display one entry at a time
 * [x] can select a choice for each entry
 * [x] can navigate through entries in exam
-* [ ] grade the exam, show number of correct/wrong
-* [ ] source the exam from JSON file
+* [x] grade the exam, show number of correct/wrong
+* [x] source the exam from JSON file
 * [x] can reset the exam
 * [ ] hints/clues/notes for each entry
 * [ ] customize the UI/CSS for unique look
