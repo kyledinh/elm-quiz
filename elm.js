@@ -6002,6 +6002,12 @@ var author$project$Main$update = F2(
 						model,
 						{current: 0, entries: author$project$Model$dcaSample, uid: 'dca-sample'}),
 					elm$core$Platform$Cmd$none);
+			case 'ReviewAnswers':
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{current: 0}),
+					elm$core$Platform$Cmd$none);
 			case 'LoadJson':
 				var uid = msg.a;
 				var url = 'http://mockingbox.com/elm-quiz/' + (uid + '.json');
@@ -6009,7 +6015,6 @@ var author$project$Main$update = F2(
 					_Utils_update(
 						model,
 						{current: 0, uid: uid}),
-
 					author$project$Main$fetchExam(url));
 			case 'NextEntry':
 				return (_Utils_cmp(
@@ -6642,8 +6647,10 @@ var author$project$Main$viewInfoFooter = function (model) {
 					]))
 			]));
 };
+var author$project$Main$ReviewAnswers = {$: 'ReviewAnswers'};
 var elm$core$String$fromFloat = _String_fromNumber;
 var elm$html$Html$h2 = _VirtualDom_node('h2');
+var elm$html$Html$h3 = _VirtualDom_node('h3');
 var elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var elm$html$Html$Attributes$style = elm$virtual_dom$VirtualDom$style;
 var author$project$Main$viewSummary = F2(
@@ -6685,7 +6692,17 @@ var author$project$Main$viewSummary = F2(
 								[
 									elm$html$Html$text('Quiz Summary')
 								])),
-							elm$html$Html$text(examScore)
+							elm$html$Html$text(examScore),
+							A2(
+							elm$html$Html$h3,
+							_List_fromArray(
+								[
+									elm$html$Html$Events$onClick(author$project$Main$ReviewAnswers)
+								]),
+							_List_fromArray(
+								[
+									elm$html$Html$text('Review Answers')
+								]))
 						]))
 				]));
 	});

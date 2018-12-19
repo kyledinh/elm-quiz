@@ -61,6 +61,7 @@ type Msg
     | LoadJson String
     | NextEntry
     | PreviousEntry
+    | ReviewAnswers
     | SelectAndNext Int String
     | NewHttpData (Result Http.Error (List Entry))
 
@@ -92,13 +93,15 @@ update msg model =
             , Cmd.none
             )
 
+        ReviewAnswers ->
+            ( { model | current = 0 }, Cmd.none )
+
         LoadJson uid ->
             let
                 url =
                     "http://mockingbox.com/elm-quiz/" ++ uid ++ ".json"
             in
             ( { model | uid = uid, current = 0 }, fetchExam url )
-
 
         NextEntry ->
             if model.current < List.length model.entries then
@@ -289,6 +292,7 @@ viewSummary entries current =
             [ class "summary" ]
             [ h2 [] [ text "Quiz Summary" ]
             , text examScore
+            , h3 [ onClick ReviewAnswers ] [ text "Review Answers" ]
             ]
         ]
 
