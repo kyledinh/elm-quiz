@@ -99,6 +99,7 @@ update msg model =
             in
             ( { model | uid = uid, current = 0 }, fetchExam url )
 
+
         NextEntry ->
             if model.current < List.length model.entries then
                 ( model |> Model.nextEntry, Cmd.none )

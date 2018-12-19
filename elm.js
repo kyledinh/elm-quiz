@@ -6009,6 +6009,7 @@ var author$project$Main$update = F2(
 					_Utils_update(
 						model,
 						{current: 0, uid: uid}),
+
 					author$project$Main$fetchExam(url));
 			case 'NextEntry':
 				return (_Utils_cmp(
