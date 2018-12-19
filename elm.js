@@ -4416,7 +4416,6 @@ var author$project$Model$emptyModel = {
 		[
 			A4(author$project$Model$newEntry, 'No Exam Loaded', _List_Nil, 0, 'default-id-0')
 		]),
-	field: '',
 	id: 'default'
 };
 var elm$core$Maybe$withDefault = F2(
@@ -4894,19 +4893,47 @@ var author$project$Main$setStorage = _Platform_outgoingPort(
 									]));
 						})($.entries)),
 					_Utils_Tuple2(
-					'field',
-					elm$json$Json$Encode$string($.field)),
-					_Utils_Tuple2(
 					'id',
 					elm$json$Json$Encode$string($.id))
 				]));
 	});
-var author$project$Main$modelNextEntry = function (model) {
+var author$project$Model$dcaSample = _List_fromArray(
+	[
+		A4(
+		author$project$Model$newEntry,
+		'Which command is used to place an image into a registry?',
+		_List_fromArray(
+			['docker commit', 'docker tag', 'docker push', 'docker images', 'docker pull']),
+		2,
+		'dca-sample-0'),
+		A4(
+		author$project$Model$newEntry,
+		'Which network allows Docker Trusted Registry components running on different nodes to communicate and replicate Docker Trusted Registry data?',
+		_List_fromArray(
+			['dtr-ol', 'dtr-hosts', 'dtr-br', 'dtr-vlan']),
+		0,
+		'dca-sample-1'),
+		A4(
+		author$project$Model$newEntry,
+		'Which of the following is not an endpoint exposed by Docker Trusted Registry that can be used to assess the health of a Docker Trusted Registry replica?',
+		_List_fromArray(
+			['/health', '/nginx_status', '/api/v0/meta/cluster_status', '/replica_status']),
+		2,
+		'dca-sample-2'),
+		A4(
+		author$project$Model$newEntry,
+		'One of your developers is trying to push an image to the registry (dtr.example.com). The push fails with the error “denied: requested access to the resource is denied”. What should you verify the user has completed?',
+		_List_fromArray(
+			['docker login -u <username> -p <password> dtr.example.com', 'docker registry login -u username -p <password> dtr.example.com', 'docker push <username>/<image:tag> dtr.example.com', 'docker images login -u <username> -p <password> dtr.example.com']),
+		0,
+		'dca-sample-3')
+	]);
+var author$project$Model$nextEntry = function (model) {
 	return _Utils_update(
 		model,
 		{current: model.current + 1});
 };
-var author$project$Main$modelPreviousEntry = function (model) {
+var author$project$Model$previousEntry = function (model) {
 	return _Utils_update(
 		model,
 		{current: model.current - 1});
@@ -4980,12 +5007,12 @@ var elm$core$List$map = F2(
 			_List_Nil,
 			xs);
 	});
-var author$project$Main$modelSelectAnswer = F3(
+var author$project$Model$selectAnswer = F3(
 	function (selectedId, id, model) {
-		var updateEntry = function (e) {
-			return _Utils_eq(e.id, id) ? _Utils_update(
-				e,
-				{selected: selectedId}) : e;
+		var updateEntry = function (entry) {
+			return _Utils_eq(entry.id, id) ? _Utils_update(
+				entry,
+				{selected: selectedId}) : entry;
 		};
 		return _Utils_update(
 			model,
@@ -4993,37 +5020,6 @@ var author$project$Main$modelSelectAnswer = F3(
 				entries: A2(elm$core$List$map, updateEntry, model.entries)
 			});
 	});
-var author$project$Model$dcaSample = _List_fromArray(
-	[
-		A4(
-		author$project$Model$newEntry,
-		'Which command is used to place an image into a registry?',
-		_List_fromArray(
-			['docker commit', 'docker tag', 'docker push', 'docker images', 'docker pull']),
-		2,
-		'dca-sample-0'),
-		A4(
-		author$project$Model$newEntry,
-		'Which network allows Docker Trusted Registry components running on different nodes to communicate and replicate Docker Trusted Registry data?',
-		_List_fromArray(
-			['dtr-ol', 'dtr-hosts', 'dtr-br', 'dtr-vlan']),
-		0,
-		'dca-sample-1'),
-		A4(
-		author$project$Model$newEntry,
-		'Which of the following is not an endpoint exposed by Docker Trusted Registry that can be used to assess the health of a Docker Trusted Registry replica?',
-		_List_fromArray(
-			['/health', '/nginx_status', '/api/v0/meta/cluster_status', '/replica_status']),
-		2,
-		'dca-sample-2'),
-		A4(
-		author$project$Model$newEntry,
-		'One of your developers is trying to push an image to the registry (dtr.example.com). The push fails with the error “denied: requested access to the resource is denied”. What should you verify the user has completed?',
-		_List_fromArray(
-			['docker login -u <username> -p <password> dtr.example.com', 'docker registry login -u username -p <password> dtr.example.com', 'docker push <username>/<image:tag> dtr.example.com', 'docker images login -u <username> -p <password> dtr.example.com']),
-		0,
-		'dca-sample-3')
-	]);
 var author$project$Main$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
@@ -5033,24 +5029,24 @@ var author$project$Main$update = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{current: 0, entries: author$project$Model$dcaSample, field: '', id: 'dca-sample'}),
+						{current: 0, entries: author$project$Model$dcaSample, id: 'dca-sample'}),
 					elm$core$Platform$Cmd$none);
 			case 'NextEntry':
 				return (_Utils_cmp(
 					model.current,
 					elm$core$List$length(model.entries)) < 0) ? _Utils_Tuple2(
-					author$project$Main$modelNextEntry(model),
+					author$project$Model$nextEntry(model),
 					elm$core$Platform$Cmd$none) : _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
 			case 'PreviousEntry':
 				return (model.current > 0) ? _Utils_Tuple2(
-					author$project$Main$modelPreviousEntry(model),
+					author$project$Model$previousEntry(model),
 					elm$core$Platform$Cmd$none) : _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
 			default:
 				var selectedId = msg.a;
 				var id = msg.b;
 				return _Utils_Tuple2(
-					author$project$Main$modelNextEntry(
-						A3(author$project$Main$modelSelectAnswer, selectedId, id, model)),
+					author$project$Model$nextEntry(
+						A3(author$project$Model$selectAnswer, selectedId, id, model)),
 					elm$core$Platform$Cmd$none);
 		}
 	});
@@ -5511,7 +5507,7 @@ var author$project$Main$viewEntry = function (model) {
 			var ent = _n0.a;
 			return ent;
 		} else {
-			return A4(author$project$Model$newEntry, '.', _List_Nil, -1, model.id);
+			return A4(author$project$Model$newEntry, '|', _List_Nil, -1, model.id);
 		}
 	}();
 	var title = entry.description;
@@ -5896,64 +5892,59 @@ _Platform_export({'Main':{'init':author$project$Main$main(
 					function (id) {
 						return A2(
 							elm$json$Json$Decode$andThen,
-							function (field) {
+							function (entries) {
 								return A2(
 									elm$json$Json$Decode$andThen,
-									function (entries) {
-										return A2(
-											elm$json$Json$Decode$andThen,
-											function (current) {
-												return elm$json$Json$Decode$succeed(
-													{current: current, entries: entries, field: field, id: id});
-											},
-											A2(elm$json$Json$Decode$field, 'current', elm$json$Json$Decode$int));
+									function (current) {
+										return elm$json$Json$Decode$succeed(
+											{current: current, entries: entries, id: id});
 									},
+									A2(elm$json$Json$Decode$field, 'current', elm$json$Json$Decode$int));
+							},
+							A2(
+								elm$json$Json$Decode$field,
+								'entries',
+								elm$json$Json$Decode$list(
 									A2(
-										elm$json$Json$Decode$field,
-										'entries',
-										elm$json$Json$Decode$list(
-											A2(
+										elm$json$Json$Decode$andThen,
+										function (selected) {
+											return A2(
 												elm$json$Json$Decode$andThen,
-												function (selected) {
+												function (id) {
 													return A2(
 														elm$json$Json$Decode$andThen,
-														function (id) {
+														function (editing) {
 															return A2(
 																elm$json$Json$Decode$andThen,
-																function (editing) {
+																function (description) {
 																	return A2(
 																		elm$json$Json$Decode$andThen,
-																		function (description) {
+																		function (correct) {
 																			return A2(
 																				elm$json$Json$Decode$andThen,
-																				function (correct) {
+																				function (completed) {
 																					return A2(
 																						elm$json$Json$Decode$andThen,
-																						function (completed) {
-																							return A2(
-																								elm$json$Json$Decode$andThen,
-																								function (answers) {
-																									return elm$json$Json$Decode$succeed(
-																										{answers: answers, completed: completed, correct: correct, description: description, editing: editing, id: id, selected: selected});
-																								},
-																								A2(
-																									elm$json$Json$Decode$field,
-																									'answers',
-																									elm$json$Json$Decode$list(elm$json$Json$Decode$string)));
+																						function (answers) {
+																							return elm$json$Json$Decode$succeed(
+																								{answers: answers, completed: completed, correct: correct, description: description, editing: editing, id: id, selected: selected});
 																						},
-																						A2(elm$json$Json$Decode$field, 'completed', elm$json$Json$Decode$bool));
+																						A2(
+																							elm$json$Json$Decode$field,
+																							'answers',
+																							elm$json$Json$Decode$list(elm$json$Json$Decode$string)));
 																				},
-																				A2(elm$json$Json$Decode$field, 'correct', elm$json$Json$Decode$int));
+																				A2(elm$json$Json$Decode$field, 'completed', elm$json$Json$Decode$bool));
 																		},
-																		A2(elm$json$Json$Decode$field, 'description', elm$json$Json$Decode$string));
+																		A2(elm$json$Json$Decode$field, 'correct', elm$json$Json$Decode$int));
 																},
-																A2(elm$json$Json$Decode$field, 'editing', elm$json$Json$Decode$bool));
+																A2(elm$json$Json$Decode$field, 'description', elm$json$Json$Decode$string));
 														},
-														A2(elm$json$Json$Decode$field, 'id', elm$json$Json$Decode$string));
+														A2(elm$json$Json$Decode$field, 'editing', elm$json$Json$Decode$bool));
 												},
-												A2(elm$json$Json$Decode$field, 'selected', elm$json$Json$Decode$int)))));
-							},
-							A2(elm$json$Json$Decode$field, 'field', elm$json$Json$Decode$string));
+												A2(elm$json$Json$Decode$field, 'id', elm$json$Json$Decode$string));
+										},
+										A2(elm$json$Json$Decode$field, 'selected', elm$json$Json$Decode$int)))));
 					},
 					A2(elm$json$Json$Decode$field, 'id', elm$json$Json$Decode$string)))
 			])))(0)}});}(this));

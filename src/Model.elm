@@ -1,10 +1,9 @@
-port module Model exposing (Entry, Model, dcaSample, emptyModel, newEntry)
+port module Model exposing (Entry, Model, dcaSample, emptyModel, newEntry, nextEntry, previousEntry, selectAnswer)
 
 
 type alias Model =
     { entries : List Entry
     , current : Int
-    , field : String
     , id : String
     }
 
@@ -20,13 +19,35 @@ type alias Entry =
     }
 
 
+nextEntry : Model -> Model
+nextEntry model =
+    { model | current = model.current + 1 }
+
+
+previousEntry : Model -> Model
+previousEntry model =
+    { model | current = model.current - 1 }
+
+
+selectAnswer : Int -> String -> Model -> Model
+selectAnswer selectedId id model =
+    let
+        updateEntry entry =
+            if entry.id == id then
+                { entry | selected = selectedId }
+
+            else
+                entry
+    in
+    { model | entries = List.map updateEntry model.entries }
+
+
 emptyModel : Model
 emptyModel =
     { entries =
         [ newEntry "No Exam Loaded" [] 0 "default-id-0"
         ]
     , current = 0
-    , field = ""
     , id = "default"
     }
 

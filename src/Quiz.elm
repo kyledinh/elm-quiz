@@ -9,7 +9,7 @@ import Html.Events exposing (..)
 import Html.Keyed as Keyed
 import Html.Lazy exposing (lazy, lazy2, lazy3)
 import Json.Decode as Json
-import Model exposing (Entry, Model, dcaSample, emptyModel, newEntry)
+import Model exposing (Entry, Model, dcaSample, emptyModel, newEntry, nextEntry, previousEntry, selectAnswer)
 import Process exposing (sleep)
 import Tuple
 
@@ -78,7 +78,6 @@ update msg model =
             ( { model
                 | id = "dca-sample"
                 , current = 0
-                , field = ""
                 , entries = dcaSample
               }
             , Cmd.none
@@ -86,47 +85,24 @@ update msg model =
 
         NextEntry ->
             if model.current < List.length model.entries then
-                ( model |> modelNextEntry, Cmd.none )
+                ( model |> Model.nextEntry, Cmd.none )
 
             else
                 ( model, Cmd.none )
 
         PreviousEntry ->
             if model.current > 0 then
-                ( model |> modelPreviousEntry, Cmd.none )
+                ( model |> Model.previousEntry, Cmd.none )
 
             else
                 ( model, Cmd.none )
 
         SelectAndNext selectedId id ->
             ( model
-                |> modelSelectAnswer selectedId id
-                |> modelNextEntry
+                |> Model.selectAnswer selectedId id
+                |> Model.nextEntry
             , Cmd.none
             )
-
-
-modelNextEntry : Model -> Model
-modelNextEntry model =
-    { model | current = model.current + 1 }
-
-
-modelPreviousEntry : Model -> Model
-modelPreviousEntry model =
-    { model | current = model.current - 1 }
-
-
-modelSelectAnswer : Int -> String -> Model -> Model
-modelSelectAnswer selectedId id model =
-    let
-        updateEntry e =
-            if e.id == id then
-                { e | selected = selectedId }
-
-            else
-                e
-    in
-    { model | entries = List.map updateEntry model.entries }
 
 
 
@@ -161,7 +137,7 @@ viewEntry model =
                     ent
 
                 Nothing ->
-                    newEntry "." [] -1 model.id
+                    newEntry "|" [] -1 model.id
 
         title =
             entry.description
@@ -279,7 +255,12 @@ viewSummary entries current =
                 "hidden"
 
         examScore =
-            String.fromInt correctCnt ++ "/" ++ String.fromInt totalCnt ++ " : Grade : " ++ String.fromFloat ((toFloat correctCnt / toFloat totalCnt) * 100) ++ "%"
+            String.fromInt correctCnt
+                ++ "/"
+                ++ String.fromInt totalCnt
+                ++ " : Grade : "
+                ++ String.fromFloat ((toFloat correctCnt / toFloat totalCnt) * 100)
+                ++ "%"
     in
     div
         [ class "header"
