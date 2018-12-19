@@ -1,0 +1,170 @@
+{
+  "name" :  "net",
+  "title" : "DCA Networking",
+  "questions": [
+    { "description" : "What is the docker command to create a bridge network?",
+      "answers" : [
+        "docker create network",
+        "docker network deploy",
+        "docker network add",
+        "docker network create"
+      ],
+      "selected" : -1,
+      "correct" : 3,
+      "uid" : "net-0"
+    },
+    { "description" : "Which of the following docker command can NOT be used to find out all the ports mapped?",
+      "answers" : [
+        "docker inspect",
+        "docker ps",
+        "docker network ls",
+        "docker port"
+      ],
+      "selected" : -1,
+      "correct" : 2,
+      "uid" : "net-1"
+    },
+    { "description" : "What is the docker command to connect a running container to an existing user-defined bridge?",
+      "answers" : [
+        "docker network join",
+        "docker connect network",
+        "docker connect network",
+        "docker network connect"
+      ],
+      "selected" : -1,
+      "correct" : 3,
+      "uid" : "net-2"
+    },
+    { "description" : "Which of the following statements is false?",
+      "answers" : [
+        "Each user-defined network creates a configurable bridge",
+        "User-defined bridges provide better isolation and interoperability between containerized applications",
+        "Linked containers on the default bridge network share environment variables",
+        "Containers can NOT be attached and detached from user-defined networks on the fly",
+        "User-defined bridges provide automatic DNS resolution between containers"
+      ],
+      "selected" : -1,
+      "correct" : 3,
+      "uid" : "net-3"
+    },
+    { "description" : "Which network driver type is best when you need multiple containers to communicate on the same Docker host?",
+      "answers" : [
+        "User-defined bridge networks",
+        "Host networks",
+        "Overlay networks",
+        "Macvlan networks"
+      ],
+      "selected" : -1,
+      "correct" : 0,
+      "uid" : "net-4"
+    },
+    { "description" : "What is the docker run option to publish a port so that an application is accesible externally?",
+      "answers" : [
+        "docker run --expose",
+        "docker run --publish",
+        "docker run --publish-port",
+        "docker run --open-port"
+      ],
+      "selected" : -1,
+      "correct" : 1,
+      "uid" : "net-5"
+    },
+    { "description" : "Which network driver type is best when you need containers running on different Docker hosts to communicate, or when multiple applications work together using swarm services?",
+      "answers" : [
+        "Macvlan networks",
+        "User-defined bridge networks",
+        "Overlay networks",
+        "Host networks"
+      ],
+      "selected" : -1,
+      "correct" : 3,
+      "uid" : "net-6"
+    },
+    { "description" : "Which network driver type is best when the network stack should not be isolated from the Docker host, but you want other aspects of the container to be isolated?",
+      "answers" : [
+        "Macvlan networks",
+        "User-defined bridge networks",
+        "Overlay networks",
+        "Host networks"
+      ],
+      "selected" : -1,
+      "correct" : 2,
+      "uid" : "net-7"
+    },
+    { "description" : "What is the docker command to display detailed information on one or more networks?",
+      "answers" : [
+        "docker network status",
+        "docker network display",
+        "docker network inspect",
+        "docker inspect network"
+      ],
+      "selected" : -1,
+      "correct" : 2,
+      "uid" : "net-8"
+    },
+    { "description" : "Which network driver type is best when you are migrating from a VM setup or need your containers to look like physical hosts on your network, each with a unique MAC address?",
+      "answers" : [
+        "Macvlan networks",
+        "User-defined bridge networks",
+        "Overlay networks",
+        "Host networks"
+      ],
+      "selected" : -1,
+      "correct" : 0,
+      "uid" : "net-9"
+    },
+    { "description" : "What is the command to set DNS server for all Docker containers?",
+      "answers" : [
+        "dockerd --dns-update IP_ADDRESS",
+        "dockerd --dns-update IP_ADDRESS",
+        "dockerd --set-dns IP_ADDRESS",
+        "dockerd --dns-server IP_ADDRESS"
+      ],
+      "selected" : -1,
+      "correct" : 1,
+      "uid" : "net-10"
+    },
+    { "description" : "Which of the following is NOT one of the 3 main Docker Container Network Model components?",
+      "answers" : [
+        "Network",
+        "Sandbox",
+        "Endpoint",
+        "Routing"
+      ],
+      "selected" : -1,
+      "correct" : 3,
+      "uid" : "net-11"
+    },
+    { "description" : "What is the docker command to create a container with custom DNS server(s)?",
+      "answers" : [
+        "docker container create --set-dns=IP_ADDRESS",
+        "docker container create --add-dns=IP_ADDRESS",
+        "docker container create --dns=IP_ADDRESS",
+        "docker container create --custom-dns=IP_ADDRESS"
+      ],
+      "selected" : -1,
+      "correct" : 2,
+      "uid" : "net-12"
+    },
+    { "description" : "Publishing a service's port using the routing mesh makes the service accessible at the published port on every swarm node. True or false?",
+      "answers" : [
+        "True",
+        "False"
+      ],
+      "selected" : -1,
+      "correct" : 0,
+      "uid" : "net-13"
+    },
+    { "description" : "What type of network is ingress network?",
+      "answers" : [
+        "bridge network",
+        "overlay network",
+        "host network",
+        "macvlan network"
+      ],
+      "selected" : -1,
+      "correct" : 1,
+      "uid" : "net-14"
+    }
+  ]
+}

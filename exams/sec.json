@@ -1,0 +1,99 @@
+{
+  "name" :  "sec",
+  "title" : "DCA Security",
+  "questions": [
+    { "description" : "Where do you create Docker Role Based Access Controls (RBAC)?",
+      "answers" : [
+        "Docker Machine",
+        "Docker Trusted Registry",
+        "Docker Compose",
+        "Universal Control Plane"
+      ],
+      "selected" : -1,
+      "correct" : 3,
+      "uid" : "sec-0"
+    },
+    { "description" : "What are the two types of UCP client bundles?",
+      "answers" : [
+        "Admin user certificate bundles and user certificate bundles",
+        "Docker CLI bundles and Docker web UI bundles",
+        "Ops client bundles and dev client bundles",
+        "Docker UCP client bundles and DTR client bundles"
+      ],
+      "selected" : -1,
+      "correct" : 0,
+      "uid" : "sec-1"
+    },
+    { "description" : "Docker security scan result is available in both UCP and DTR. True or false?",
+      "answers" : [
+        "True",
+        "False"
+      ],
+      "selected" : -1,
+      "correct" : 1,
+      "uid" : "sec-2"
+    },
+    { "description" : "What is a grant NOT made up of in Docker's Role Based Access Controls (RBAC)?",
+      "answers" : [
+        "Certificate",
+        "Resource collection",
+        "Subject",
+        "Role"
+      ],
+      "selected" : -1,
+      "correct" : 0,
+      "uid" : "sec-3"
+    },
+    { "description" : "What is the command that need to be executed to sign an image before pushing it to repository?",
+      "answers" : [
+        "export DOCKER_CONTENT_TRUST=1",
+        "export SIGN_DOCKER_IMAGE=1",
+        "export TRUST_DOCKER_IMAGE=1",
+        "export TRUST_DOCKER_CONTENT=1"
+      ],
+      "selected" : -1,
+      "correct" : 0,
+      "uid" : "sec-4"
+    },
+    { "description" : "Where is the option to integrate Docker Enterprise with LDAP?",
+      "answers" : [
+        "Universal Control Plane",
+        "Docker Machine",
+        "Docker Compose",
+        "Docker Trusted Registry"
+      ],
+      "selected" : -1,
+      "correct" : 0,
+      "uid" : "sec-5"
+    },
+    { "description" : "What is the difference between UCP workers and managers?",
+      "answers" : [
+        "ucp-agent service automatically starts serving all UCP components in manager node, and only a proxy service in worker node",
+        "ucp-agent service automatically starts serving all UCP components in worker node, and only a proxy service in manager node"
+      ],
+      "selected" : -1,
+      "correct" : 1,
+      "uid" : "sec-6"
+    },
+    { "description" : "Docker security scan can be started by all users including those with read-only access. True or false?",
+      "answers" : [
+        "True",
+        "False"
+      ],
+      "selected" : -1,
+      "correct" : 1,
+      "uid" : "sec-7"
+    },
+    { "description" : "What are NOT the steps needed to sign images in a way that UCP trusts them?",
+      "answers" : [
+        "Approve image sign on UCP",
+        "Configure Notary client",
+        "Delegate signing to the keys in your UCP client bundle",
+        "Initialize trust metadata for the repository"
+      ],
+      "selected" : -1,
+      "correct" : 0,
+      "uid" : "sec-8"
+    }
+  ]
+}

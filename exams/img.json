@@ -1,0 +1,220 @@
+{
+  "name" :  "img",
+  "title" : "DCA Image: Creation, Management and Registry",
+  "questions": [
+    { "description" : "Which of the following is NOT how to create an efficient image via a Dockerfile?",
+      "answers" : [
+        "Start with an appropriate base image",
+        "Avoid installing unnecessary packages",
+        "Combine multiple applications into a single container",
+        "Use multi-stage builds"
+      ],
+      "selected" : -1,
+      "correct" : 2,
+      "uid" : "img-0"
+    },
+    { "description" : "What Dockerfile option LABEL does?",
+      "answers" : [
+        "Provide defaults for an executing container",
+        "Label a container that will run as an executable",
+        "Adds metadata to an image",
+        "Tells Docker how to test a container to check that it is still working"
+      ],
+      "selected" : -1,
+      "correct" : 2,
+      "uid" : "img-1"
+    },
+    { "description" : "Which of the following Dockerfile options creates a mount point with the specified name and marks it as holding externally mounted volumes from native host or other containers?",
+      "answers" : [
+        "ONBUILD",
+        "WORKDIR",
+        "RUN",
+        "VOLUME"
+      ],
+      "selected" : -1,
+      "correct" : 3,
+      "uid" : "img-2"
+    },
+    { "description" : "What does docker image rm command do?",
+      "answers" : [
+        "Remove one or more images",
+        "Remove unused images",
+        "Show the history of an image",
+        "Display detailed information on one or more images"
+      ],
+      "selected" : -1,
+      "correct" : 0,
+      "uid" : "img-3"
+    },
+    { "description" : "Which of the following docker image commands display detailed information on one or more images?",
+      "answers" : [
+        "docker image inspect",
+        "docker image detail",
+        "docker image history",
+        "docker image ls"
+      ],
+      "selected" : -1,
+      "correct" : 0,
+      "uid" : "img-4"
+    },
+    { "description" : "What Dockerfile option EXPOSE does?",
+      "answers" : [
+        "Label a container that will run as an executable",
+        "Expose defaults for an executing container",
+        "Informs Docker that the container listens on the specified network ports at runtime",
+        "Adds metadata to an image"
+      ],
+      "selected" : -1,
+      "correct" : 2,
+      "uid" : "img-5"
+    },
+    { "description" : "Which of the Dockerfile options initializes a new build stage and sets the base image for subsequent instructions?",
+      "answers" : [
+        "FROM",
+        "ONBUILD",
+        "RUN",
+        "CMD"
+      ],
+      "selected" : -1,
+      "correct" : 0,
+      "uid" : "img-6"
+    },
+    { "description" : "Which of the Dockerfile options executes any commands in a new layer on top of the current image and commit the results?",
+      "answers" : [
+        "CMD",
+        "FROM",
+        "RUN",
+        "ONBUILD"
+      ],
+      "selected" : -1,
+      "correct" : 2,
+      "uid" : "img-7"
+    },
+    { "description" : "What docker image prune command does?",
+      "answers" : [
+        "Remove one or more images",
+        "Remove unused images",
+        "Display detailed information on one or more images",
+        "Show the history of an image"
+      ],
+      "selected" : -1,
+      "correct" : 1,
+      "uid" : "img-8"
+    },
+    { "description" : "Dockerfile option EXPOSE publish the port to external systems. True or false?",
+      "answers" : [
+        "False",
+        "True"
+      ],
+      "selected" : -1,
+      "correct" : 0,
+      "uid" : "img-9"
+    },
+    { "description" : "Which of the following statements is incorrect?",
+      "answers" : [
+        "When a container is deleted, the writable layer is persisted.",
+        "The column 'virtual size' of docker ps -s output shows the amount of data used for the read-only image data used by the container plus the container's writable layer 'size'.",
+        "The column 'size' of docker ps -s output shows the amount of data that is used for the writable layer of each container.",
+        "Copy-on-write is a Docker strategy of sharing and copying files for maximum efficiency."
+      ],
+      "selected" : -1,
+      "correct" : 0,
+      "uid" : "img-10"
+    },
+    { "description" : "Which of the following is NOT a valid way to tag a Docker image?",
+      "answers" : [
+        "Tag an image referenced by Name and Tag",
+        "Tag an image referenced by image ID",
+        "Tag an image referenced by user ID",
+        "Tag an image referenced by Name"
+      ],
+      "selected" : -1,
+      "correct" : 2,
+      "uid" : "img-11"
+    },
+    { "description" : "What is the docker command to pull an image or a repository from a registry?",
+      "answers" : [
+        "docker deploy",
+        "docker checkout",
+        "docker pull",
+        "docker build"
+      ],
+      "selected" : -1,
+      "correct" : 2,
+      "uid" : "img-12"
+    },
+    { "description" : "Which of the following is the correct command to tag an image?",
+      "answers" : [
+        "docker tag SOURCE_IMAGE[:TAG] TARGET_IMAGE[:TAG]",
+        "docker tag image SOURCE_IMAGE[:TAG] TARGET_IMAGE[:TAG]",
+        "docker tag TARGET_IMAGE[:TAG] SOURCE_IMAGE[:TAG]",
+        "docker build tag SOURCE_IMAGE[:TAG] TARGET_IMAGE[:TAG]"
+      ],
+      "selected" : -1,
+      "correct" : 0,
+      "uid" : "img-13"
+    },
+    { "description" : "What is the image storage solution that is part of Docker Enterprise Edition called?",
+      "answers" : [
+        "Docker Trusted Registry",
+        "Docker Hub",
+        "Docker Registry",
+        "Universal Control Plane"
+      ],
+      "selected" : -1,
+      "correct" : 0,
+      "uid" : "img-14"
+    },
+    { "description" : "Each container shares common writeable container layer. True or false?",
+      "answers" : [
+        "True",
+        "False"
+      ],
+      "selected" : -1,
+      "correct" : 1,
+      "uid" : "img-15"
+    },
+    { "description" : "What is the docker command for displaying layers of a Docker image?",
+      "answers" : [
+        "docker image layers",
+        "docker layers",
+        "docker info",
+        "docker history"
+      ],
+      "selected" : -1,
+      "correct" : 3,
+      "uid" : "img-16"
+    },
+    { "description" : "Which of the following is the correct command to store an image to a registry?",
+      "answers" : [
+        "docker push [OPTIONS] NAME[:TAG]",
+        "docker commit [OPTIONS] NAME[:TAG]",
+        "docker upload [OPTIONS] NAME[:TAG]",
+        "docker store [OPTIONS] NAME[:TAG]"
+      ],
+      "selected" : -1,
+      "correct" : 0,
+      "uid" : "img-17"
+    },
+    { "description" : "What is the docker command to remove one or more images?",
+      "answers" : [
+        "docker image rm",
+        "docker delete",
+        "docker remove",
+        "docker image delete"
+      ],
+      "selected" : -1,
+      "correct" : 0,
+      "uid" : "img-18"
+    },
+    { "description" : "Docker image is built up from a series of layers and each layer represents an instruction in the image's Dockerfile.",
+      "answers" : [
+        "False",
+        "True"
+      ],
+      "selected" : -1,
+      "correct" : 1,
+      "uid" : "img-19"
+    }
+  ]
+}

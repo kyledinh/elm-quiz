@@ -1,0 +1,153 @@
+{
+  "name" :  "cfg",
+  "title" : "DCA Installation and Configuration",
+  "questions": [
+    { "description" : "You can monitor the status of UCP by using the web UI or the CLI. True or false? ",
+      "answers" : [
+        "True",
+        "False"
+      ],
+      "selected" : -1,
+      "correct" : 0,
+      "uid" : "cfg-0"
+    },
+    { "description" : "Which of the following items need to be considered before installing Docker Enterprise?",
+      "answers" : [
+        "Time Synchronization",
+        "Docker Engine, DTR, and UCP version compatibility",
+        "Disk space",
+        "Network ports",
+        "All of the options"
+      ],
+      "selected" : -1,
+      "correct" : 4,
+      "uid" : "cfg-1"
+    },
+    { "description" : "What is the docker command to see container logs?",
+      "answers" : [
+        "docker fetch-logs",
+        "docker logs",
+        "docker dump-logs",
+        "docker debug"
+      ],
+      "selected" : -1,
+      "correct" : 1,
+      "uid" : "cfg-2"
+    },
+    { "description" : "Which of the following tool to use to create users and teams?",
+      "answers" : [
+        "Docker Compose",
+        "Universal Control Plane (UCP)",
+        "Docker Machine",
+        "Docker Trusted Registry (DTR)"
+      ],
+      "selected" : -1,
+      "correct" : 1,
+      "uid" : "cfg-3"
+    },
+    { "description" : "What is the endpoint that we can use to check the health of a single UCP manager node?",
+      "answers" : [
+        "https:///_heartbeat",
+        "https:///_health",
+        "https:///_status",
+        "https:///_ping"
+      ],
+      "selected" : -1,
+      "correct" : 3,
+      "uid" : "cfg-4"
+    },
+    { "description" : "What is the correct order to upgrade a Docker cluster?",
+      "answers" : [
+        "Upgrade UCP, DTR, then engine and kernel",
+        "Upgrade engine and kernel, DTR, and then UCP",
+        "Upgrade DTR, UCP, then engine and kernel",
+        "Upgrade engine and kernel, UCP, and then DTR"
+      ],
+      "selected" : -1,
+      "correct" : 3,
+      "uid" : "cfg-5"
+    },
+    { "description" : "What is the docker command to find the current logging driver for a running container?",
+      "answers" : [
+        "docker stats",
+        "docker inspect",
+        "docker config",
+        "docker info"
+      ],
+      "selected" : -1,
+      "correct" : 1,
+      "uid" : "cfg-6"
+    },
+    { "description" : "What is the recommended approach to set storage driver?",
+      "answers" : [
+        "Use --storage-driver flag when running dockerd",
+        "Set the 'storage-driver' option in the daemon.json file"
+      ],
+      "selected" : -1,
+      "correct" : 1,
+      "uid" : "cfg-7"
+    },
+    { "description" : "What is the docker command to add a node to a swarm?",
+      "answers" : [
+        "docker swarm join",
+        "docker join swarm",
+        "docker swarm add-node",
+        "docker swarm create-node"
+      ],
+      "selected" : -1,
+      "correct" : 0,
+      "uid" : "cfg-8"
+    },
+    { "description" : "What is the correct order to backup Docker EE components?",
+      "answers" : [
+        "Back up UCP, swarm, then DTR",
+        "Back up DTR, UCP, then swarm",
+        "Back up swarm, DTR, then UCP",
+        "Back up swarm, UCP, then DTR"
+      ],
+      "selected" : -1,
+      "correct" : 3,
+      "uid" : "cfg-9"
+    },
+    { "description" : "What is the docker command to see the storage driver Docker is currently using?",
+      "answers" : [
+        "docker config",
+        "docker inspect",
+        "docker info",
+        "docker stats"
+      ],
+      "selected" : -1,
+      "correct" : 2,
+      "uid" : "cfg-10"
+    },
+    { "description" : "What is the docker command to backup the UCP?",
+      "answers" : [
+        "docker/ucp backup",
+        "docker backup ucp"
+      ],
+      "selected" : -1,
+      "correct" : 0,
+      "uid" : "cfg-11"
+    },
+    { "description" : "What is the docker command to setup a swarm?",
+      "answers" : [
+        "docker swarm create",
+        "docker swarm init",
+        "docker init swarm",
+        "docker create swarm"
+      ],
+      "selected" : -1,
+      "correct" : 1,
+      "uid" : "cfg-12"
+    },
+    { "description" : "How to configure the default logging driver?",
+      "answers" : [
+        "Use --log-driver flag",
+        "Set the 'log-driver' option in the daemon.json file"
+      ],
+      "selected" : -1,
+      "correct" : 1,
+      "uid" : "cfg-13"
+    }
+  ]
+}

@@ -5770,7 +5770,9 @@ var elm$http$Http$get = F2(
 				withCredentials: false
 			});
 	});
-var author$project$Data$getData = A2(elm$http$Http$get, 'http://mockingbox.com/alpha.json', author$project$Data$examDecoder);
+var author$project$Data$getData = function (url) {
+	return A2(elm$http$Http$get, url, author$project$Data$examDecoder);
+};
 var author$project$Main$NewHttpData = function (a) {
 	return {$: 'NewHttpData', a: a};
 };
@@ -5896,7 +5898,12 @@ var elm$http$Http$send = F2(
 			resultToMessage,
 			elm$http$Http$toTask(request_));
 	});
-var author$project$Main$fetchExam = A2(elm$http$Http$send, author$project$Main$NewHttpData, author$project$Data$getData);
+var author$project$Main$fetchExam = function (url) {
+	return A2(
+		elm$http$Http$send,
+		author$project$Main$NewHttpData,
+		author$project$Data$getData(url));
+};
 var author$project$Model$dcaSample = _List_fromArray(
 	[
 		A4(
@@ -5996,11 +6003,13 @@ var author$project$Main$update = F2(
 						{current: 0, entries: author$project$Model$dcaSample, uid: 'dca-sample'}),
 					elm$core$Platform$Cmd$none);
 			case 'LoadJson':
+				var uid = msg.a;
+				var url = 'http://mockingbox.com/elm-quiz/' + (uid + '.json');
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{uid: 'alpha'}),
-					author$project$Main$fetchExam);
+						{uid: uid}),
+					author$project$Main$fetchExam(url));
 			case 'NextEntry':
 				return (_Utils_cmp(
 					model.current,
@@ -6083,7 +6092,9 @@ var author$project$Main$viewControlsCount = F3(
 						]))
 				]));
 	});
-var author$project$Main$LoadJson = {$: 'LoadJson'};
+var author$project$Main$LoadJson = function (a) {
+	return {$: 'LoadJson', a: a};
+};
 var author$project$Main$Reset = {$: 'Reset'};
 var elm$html$Html$button = _VirtualDom_node('button');
 var elm$virtual_dom$VirtualDom$Normal = function (a) {
@@ -6115,11 +6126,84 @@ var author$project$Main$viewControlsReset = A2(
 			elm$html$Html$button,
 			_List_fromArray(
 				[
-					elm$html$Html$Events$onClick(author$project$Main$LoadJson)
+					elm$html$Html$Events$onClick(
+					author$project$Main$LoadJson('img'))
 				]),
 			_List_fromArray(
 				[
-					elm$html$Html$text('Load')
+					elm$html$Html$text('IMG')
+				])),
+			A2(
+			elm$html$Html$span,
+			_List_Nil,
+			_List_fromArray(
+				[
+					elm$html$Html$text(' | ')
+				])),
+			A2(
+			elm$html$Html$button,
+			_List_fromArray(
+				[
+					elm$html$Html$Events$onClick(
+					author$project$Main$LoadJson('orc'))
+				]),
+			_List_fromArray(
+				[
+					elm$html$Html$text('ORC')
+				])),
+			A2(
+			elm$html$Html$span,
+			_List_Nil,
+			_List_fromArray(
+				[
+					elm$html$Html$text(' | ')
+				])),
+			A2(
+			elm$html$Html$button,
+			_List_fromArray(
+				[
+					elm$html$Html$Events$onClick(
+					author$project$Main$LoadJson('net'))
+				]),
+			_List_fromArray(
+				[
+					elm$html$Html$text('NET')
+				])),
+			A2(
+			elm$html$Html$span,
+			_List_Nil,
+			_List_fromArray(
+				[
+					elm$html$Html$text(' | ')
+				])),
+			A2(
+			elm$html$Html$button,
+			_List_fromArray(
+				[
+					elm$html$Html$Events$onClick(
+					author$project$Main$LoadJson('cfg'))
+				]),
+			_List_fromArray(
+				[
+					elm$html$Html$text('CFG')
+				])),
+			A2(
+			elm$html$Html$span,
+			_List_Nil,
+			_List_fromArray(
+				[
+					elm$html$Html$text(' | ')
+				])),
+			A2(
+			elm$html$Html$button,
+			_List_fromArray(
+				[
+					elm$html$Html$Events$onClick(
+					author$project$Main$LoadJson('sec'))
+				]),
+			_List_fromArray(
+				[
+					elm$html$Html$text('SEC')
 				])),
 			A2(
 			elm$html$Html$span,
@@ -6136,7 +6220,7 @@ var author$project$Main$viewControlsReset = A2(
 				]),
 			_List_fromArray(
 				[
-					elm$html$Html$text('Reset')
+					elm$html$Html$text('Default')
 				]))
 		]));
 var author$project$Main$NextEntry = {$: 'NextEntry'};
@@ -6516,7 +6600,7 @@ var author$project$Main$viewInfoFooter = function (model) {
 				_List_Nil,
 				_List_fromArray(
 					[
-						elm$html$Html$text('Use \'Reset\' to load DCA practice exam.')
+						elm$html$Html$text('Select one of these IMG | ORC | NET | CFG | SEC | Default available exams.')
 					])),
 				A2(
 				elm$html$Html$p,

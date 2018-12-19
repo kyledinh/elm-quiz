@@ -21,19 +21,6 @@ entryDecoder =
         (Decode.at [ "uid" ] Decode.string)
 
 
-getData : Http.Request (List Entry)
-getData =
-    Http.get "http://mockingbox.com/alpha.json" examDecoder
-
-
-
-{-
-   getData : Http.Request (List User)
-   getData =
-       Http.get "/src/data.json" usersDecoder
-
-
-   fetchUsers : Cmd Msg
-   fetchUsers =
-       Http.send NewHttpData getData
--}
+getData : String -> Http.Request (List Entry)
+getData url =
+    Http.get url examDecoder
